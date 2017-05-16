@@ -1,7 +1,7 @@
 <template>
 	<a
 		href="#"
-		id="test"
+		:id="id_name"
 		@click="generate_excel">
 		<slot>
 			Download Excel
@@ -34,6 +34,12 @@ export default {
 		}
 	},
 	created: function () {
+	},
+	computed:{
+		id_name : function(){
+			var now = new Date().getTime();
+			return 'export_'+now;
+		}
 	},
 	methods: {
 		emitXmlHeader: function () {
@@ -89,7 +95,7 @@ export default {
 		        'type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 		    });
 
-			var a = document.getElementById('test');
+			var a = document.getElementById(id_name);
 		    a.href = window.URL.createObjectURL(blob);
 		    a.download = this.name;
 		}
