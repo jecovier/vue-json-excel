@@ -34,7 +34,7 @@ const app = new Vue({
 		        "amount"    : 42
 		    },
 		    {
-		        "name"      : "Ζαλώνης Thessaloniki",
+		        "name"      : "Thessaloniki",
 		        "city"      : "Athens",
 		        "country"   : "Greece",
 		        "birthdate" : "1987-11-23",
@@ -47,13 +47,17 @@ In your HTML call it like
 
 ```html
 <download-excel
-	data   = "json_data"
-	fields = "json_fields"
-	name   = "file_name.xls">
+	class   = "btn btn-default"
+	:data   = "json_data"
+	:fields = "json_fields"
+	name    = "filename.xls">
+
+	Download Excel
+
 </download-excel>
 ```
-json_data contains the data you want to export, and json_fields is a type mapping
-for the fields in the json.
+json_data contains the data you want to export, json_fields is a type mapping
+for the fields in the json, name is the file name.
 
 
 
