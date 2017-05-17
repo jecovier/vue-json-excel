@@ -95,7 +95,7 @@ export default {
 		        'type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 		    });
 
-			var a = document.getElementById(id_name);
+			var a = document.getElementById(this.id_name);
 		    a.href = window.URL.createObjectURL(blob);
 		    a.download = this.name;
 		}
