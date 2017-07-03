@@ -80,7 +80,7 @@ export default {
 		        for (col in data[row]) {
 		            xml += '  <ss:Cell>\n';
 		            xml += '    <ss:Data ss:Type="' + this.fields[col]  + '">';
-		            xml += String(data[row][col]).replace(/[^a-zA-Z0-9\s\-ñíéáóú\#\,\.\;\:ÑÍÉÓÁÚ]/g,'') + '</ss:Data>\n';
+		            xml += String(data[row][col]).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;') + '</ss:Data>\n';
 		            xml += '  </ss:Cell>\n';
 		        }
 
