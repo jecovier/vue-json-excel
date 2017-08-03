@@ -4,12 +4,10 @@
 		:id="id_name"
 		@click="generate_excel">
 		<slot>
-			Download Excel
+			{{button_text}}
 		</slot>
 	</a>
 </template>
-
-
 
 <script>
 export default {
@@ -20,6 +18,10 @@ export default {
 		}
 	},
 	props: {
+		'button_text': {
+			type: String,
+			default: "Download Excel"
+		},
 		'data':{
 			type: Array,
 			required: true
