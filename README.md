@@ -56,13 +56,12 @@ In your HTML call it like
 	:fields = "json_fields"
 	name    = "filename.xls">
 
-	Download Excel
+	Download Excel (you can customize this with html code!)
 
 </download-excel>
 ```
 json_data contains the data you want to export, json_fields is a type mapping
-for the fields in the json, name is the file name. If you want to customize
-the text in the button, change "Download Excel" with whatever html content you want.
+for the fields in the json, name is the file name.
 
 
 
