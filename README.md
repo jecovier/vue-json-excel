@@ -61,7 +61,8 @@ In your HTML call it like
 </download-excel>
 ```
 json_data contains the data you want to export, json_fields is a type mapping
-for the fields in the json, name is the file name.
+for the fields in the json, name is the file name. If you want to customize
+the text in the button, change "Download Excel" with whatever html content you want.
 
 
 
