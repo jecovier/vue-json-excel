@@ -43,27 +43,28 @@ export default {
 	},
 	methods: {
 		emitXmlHeader: function () {
-		    var headerRow =  '<ss:Row>\n';
+		    var headerRow =  '<tr>\n';
 		    for (var colName in this.fields) {
-		        headerRow += '  <ss:Cell>\n';
-		        headerRow += '    <ss:Data ss:Type="String">';
-		        headerRow += colName + '</ss:Data>\n';
-		        headerRow += '  </ss:Cell>\n';
+		        headerRow += '  <th>\n';
+		        headerRow += colName + '\n';
+		        headerRow += '  </th>\n';
 		    }
-		    headerRow += '</ss:Row>\n';
-		    return '<?xml version="1.0"?>\n' +
-		           '<ss:Workbook xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">\n' +
-		           '<ss:Worksheet ss:Name="Sheet1">\n' +
-		           '<ss:Table>\n\n' + headerRow;
+		    headerRow += '</tr>\n';
+		    return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Data</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>\n' +
+				   '<thead>\n\n' +
+				   headerRow+
+				   '</thead>\n\n'+
+		           '</tbody>\n';
 		},
 
 		emitXmlFooter: function() {
-		    return '\n</ss:Table>\n' +
-		           '</ss:Worksheet>\n' +
-		           '</ss:Workbook>\n';
+		    return '\n</tbody>\n' +
+					'</table>\n'+
+					'</body>\n'+
+		           '</html>\n';
 		},
 
-		jsonToSsXml: function (jsonObject) {
+		jsonToHtml: function (jsonObject) {
 		    var row;
 		    var col;
 		    var xml;
@@ -75,29 +76,28 @@ export default {
 		    xml = this.emitXmlHeader();
 
 		    for (row = 0; row < data.length; row++) {
-		        xml += '<ss:Row>\n';
+		        xml += '<tr>\n';
 
 		        for (col in data[row]) {
-		            xml += '  <ss:Cell>\n';
-		            xml += '    <ss:Data ss:Type="' + this.fields[col]  + '">';
-		            xml += String(data[row][col]).replace(/[^a-zA-Z0-9\s\-ñíéáóú\#\,\.\;\:ÑÍÉÓÁÚ]/g,'') + '</ss:Data>\n';
-		            xml += '  </ss:Cell>\n';
+		            xml += '  <td>\n';
+		            xml += String(data[row][col])+ '\n';
+		            xml += '  </td>\n';
 		        }
 
-		        xml += '</ss:Row>\n';
+		        xml += '</tr>\n';
 		    }
 
 		    xml += this.emitXmlFooter();
 		    return xml;
 		},
-		generate_excel: function (content, filename, contentType) {
-		    var blob = new Blob([this.jsonToSsXml(this.data)], {
-		        'type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-		    });
+
+		generate_excel: function (){
+	        var uri = 'data:application/vnd.ms-excel;base64,'
+	        , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
 
 			var a = document.getElementById(this.id_name);
-		    a.href = window.URL.createObjectURL(blob);
-		    a.download = this.name;
+			a.href = uri + base64(this.jsonToHtml(this.data));
+	        a.download = this.name;
 		}
 	}
 }
