@@ -1,5 +1,9 @@
 # JSON to Excel for VUE 2
-Download your JSON data as an excel file directly from the browser. This component it's based on the solution proposed on this thread http://stackoverflow.com/questions/29230518/how-to-export-json-data-to-excel-file-using-javascript
+Download your JSON data as an excel file directly from the browser. This component it's based on the solution proposed on this thread https://stackoverflow.com/questions/17142427/javascript-to-export-html-table-to-excel
+
+# FIX
+[03-08-2017] downloaded file works with Microsoft Office
+
 
 ## ✔ Getting started
 
