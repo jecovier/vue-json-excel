@@ -33,6 +33,10 @@ export default {
 		'name':{
 			type: String,
 			default: "data.xls"
+		},
+		'meta':{
+			type: Array,
+			default: []
 		}
 	},
 	created: function () {
@@ -51,8 +55,16 @@ export default {
 		        headerRow += colName + '\n';
 		        headerRow += '  </th>\n';
 		    }
-		    headerRow += '</tr>\n';
-		    return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Data</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>\n' +
+			headerRow += '</tr>\n';
+			var metatags = null;
+			this.meta.forEach(function(element) {
+				metatags += '<meta '
+				element.forEach(function(m) {
+					metatags += m.key+'="'+m.value+'" ';
+				});
+				metatags += '>';
+			});
+		    return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head>'+metatags+'<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Data</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>\n' +
 				   '<thead>\n\n' +
 				   headerRow+
 				   '</thead>\n\n'+
@@ -70,7 +82,7 @@ export default {
 		    var row;
 		    var col;
 		    var xml;
-			console.log(jsonObject);
+			// console.log(jsonObject);
 		    var data = typeof jsonObject != "object"
 		             ? JSON.parse(jsonObject)
 		             : jsonObject;
