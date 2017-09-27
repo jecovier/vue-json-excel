@@ -46,10 +46,10 @@ const app = new Vue({
 		    }
 		],
 		json_meta: [
-			[{
+			{
 				"key": "charset",
 				"value": "utf-8"
-			}]
+			}
 		],
 ```
 
