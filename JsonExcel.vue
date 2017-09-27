@@ -56,14 +56,9 @@ export default {
 		        headerRow += '  </th>\n';
 		    }
 			headerRow += '</tr>\n';
-			var metatags = null;
-			this.meta.forEach(function(element) {
-				metatags += '<meta '
-				element.forEach(function(m) {
-					metatags += m.key+'="'+m.value+'" ';
-				});
-				metatags += '>';
-			});
+			var metatags = this.meta.reduce(function(tags, obj) {
+				return [tags, '<meta ', obj.key, '="', obj.value, '"', '/>'].join('');
+			}, '');
 		    return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head>'+metatags+'<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Data</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>\n' +
 				   '<thead>\n\n' +
 				   headerRow+
