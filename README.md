@@ -45,6 +45,12 @@ const app = new Vue({
 		        "amount"    : 42
 		    }
 		],
+		json_meta: [
+			[{
+				"key": "charset",
+				"value": "utf-8"
+			}]
+		],
 ```
 
 In your HTML call it like
@@ -54,6 +60,7 @@ In your HTML call it like
 	class   = "btn btn-default"
 	:data   = "json_data"
 	:fields = "json_fields"
+	:meta   = "json_meta"
 	name    = "filename.xls">
 
 	Download Excel (you can customize this with html code!)

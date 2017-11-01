@@ -33,6 +33,10 @@ export default {
 		'name':{
 			type: String,
 			default: "data.xls"
+		},
+		'meta':{
+			type: Array,
+			default: []
 		}
 	},
 	created: function () {
