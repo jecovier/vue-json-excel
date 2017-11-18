@@ -61,8 +61,6 @@ In your HTML call it like
 	class   = "btn btn-default"
 	:data   = "json_data"
 	:fields = "json_fields"
-	type    = "xls"
-	:meta   = "json_meta"
 	name    = "filename.xls">
 
 	Download Excel (you can customize this with html code!)
@@ -81,7 +79,6 @@ To export JSON to CSV file just add the prop type with value "csv":
 	:data   = "json_data"
 	:fields = "json_fields"
 	type    = "csv"
-	:meta   = "json_meta"
 	name    = "filename.xls">
 
 	Download Excel (you can customize this with html code!)
