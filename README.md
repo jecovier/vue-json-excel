@@ -72,7 +72,7 @@ In your HTML call it like
 json_data contains the data you want to export, json_fields is a type mapping
 for the fields in the json, name is the file name.
 
-##Export CSV
+## Export CSV
 To export JSON to CSV file just add the prop type with value "csv":
 
 ```html
