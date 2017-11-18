@@ -2,6 +2,7 @@
 Download your JSON data as an excel file directly from the browser. This component it's based on the solution proposed on this thread https://stackoverflow.com/questions/17142427/javascript-to-export-html-table-to-excel
 
 # FIX
+[11-18-2017] Thanks to @msonowal now you can export to CSV, just add the prop: type="csv"
 [03-08-2017] downloaded file works with Microsoft Office
 
 
@@ -71,6 +72,22 @@ In your HTML call it like
 json_data contains the data you want to export, json_fields is a type mapping
 for the fields in the json, name is the file name.
 
+##Export CSV
+To export JSON to CSV file just add the prop type with value "csv":
+
+```html
+<download-excel
+	class   = "btn btn-default"
+	:data   = "json_data"
+	:fields = "json_fields"
+	type    = "csv"
+	:meta   = "json_meta"
+	name    = "filename.xls">
+
+	Download Excel (you can customize this with html code!)
+
+</download-excel>
+```
 
 
 ## License
