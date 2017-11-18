@@ -60,6 +60,7 @@ In your HTML call it like
 	class   = "btn btn-default"
 	:data   = "json_data"
 	:fields = "json_fields"
+	type    = "xls"
 	:meta   = "json_meta"
 	name    = "filename.xls">
 
