@@ -2,7 +2,7 @@
 	<a
 		href="#"
 		:id="id_name"
-		@click="generate_excel">
+		@click="generate">
 		<slot>
 			{{button_text}}
 		</slot>
@@ -18,6 +18,10 @@ export default {
 		}
 	},
 	props: {
+		'type' : {
+			type: String,
+			default: "xls"
+		},
 		'button_text': {
 			type: String,
 			default: "Download Excel"
@@ -48,10 +52,15 @@ export default {
 		}
 	},
 	methods: {
-		generate_excel: function (){
-	    this.exportXLS(this.data, this.name, this.fields)
+		generate() {
+			if (this.type == 'csv') {
+				return this.exportCSV(this.data, this.name, this.fields);
+			}
+			return this.exportXLS(this.data, this.name, this.fields);
 		},
-
+		generate_excel: function () {
+	    	this.exportXLS(this.data, this.name, this.fields)
+		},
 		jsonToXLS: function (data, header) {
 			var xlsTemp = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta name=ProgId content=Excel.Sheet> <meta name=Generator content="Microsoft Excel 11"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>${table}</table></body></html>'
 
@@ -67,7 +76,18 @@ export default {
 				data.map(function (item, index) {
 					xlsData += '<tr>'
 					for (var i = 0; i < keys.length; i++) {
-						xlsData += '<td>' + item[keys[i]] + '</td>'
+						if (keys[i].indexOf(".") !== -1) {
+							var keyNestedSplit = keys[i].split(".");
+							var valueFromNestedKey = item[keyNestedSplit[0]];
+						
+							for (var j = 1; j < keyNestedSplit.length; j++) {
+								valueFromNestedKey = valueFromNestedKey[keyNestedSplit[j]];
+							}
+
+							xlsData += '<td>' + valueFromNestedKey + '</td>'
+						} else {
+							xlsData += '<td>' + item[keys[i]] + '</td>'
+						}
 					}
 					xlsData += '</tr>'
 				})
@@ -83,18 +103,15 @@ export default {
 			})
 			return xlsTemp.replace('${table}', xlsData)
 	  },
-
-		jsonToCSV: function (data, keys) {
+		jsonToCSV: function (data, header) {
 			var csvData = ''
-			if (keys) {
-				data.map(function (item) {
-					for (var i = 0; i < keys.length; i++) {
-						csvData += item[keys[i]] + ','
-					}
-					csvData = csvData.slice(0, csvData.length - 1)
-					csvData += '\r\n'
-				})
-				return csvData
+			
+			if (header) {
+				for (var key in header) {
+					csvData +=  header[key] + ','
+				}
+				csvData = csvData.slice(0, csvData.length - 1)
+				csvData += '\r\n'
 			}
 			data.map(function (item) {
 				for (var k in item) {
@@ -105,57 +122,52 @@ export default {
 			})
 			return csvData
 	  },
-
     base64: function (s) {
 	    return window.btoa(window.unescape(encodeURIComponent(s)))
     },
-
     exportXLS: function (data, fileName, header) {
-			var XLSData = 'data:application/vnd.ms-excel;base64,' + this.base64(this.jsonToXLS(data, header))
-			this.download(XLSData, fileName)
-		},
-
+		var XLSData = 'data:application/vnd.ms-excel;base64,' + this.base64(this.jsonToXLS(data, header))
+		this.download(XLSData, fileName)
+	},
     exportCSV: function (data, fileName, keys) {
-			var CSVData = 'data:application/csv;base64,' + this.base64(this.jsonToCSV(data, keys))
-			this.download(CSVData, fileName)
-		},
+		var CSVData = 'data:application/csv;base64,' + this.base64(this.jsonToCSV(data, keys))
+		this.download(CSVData, fileName)
+	},
+	base64ToBlob: function (base64Data) {
+		var arr   = base64Data.split(',')
+		var mime  = arr[0].match(/:(.*?);/)[1]
+		var bstr  = atob(arr[1])
+		var n     = bstr.length
+		var u8arr = new Uint8ClampedArray(n)
 
-		base64ToBlob: function (base64Data) {
-			var arr   = base64Data.split(',')
-			var mime  = arr[0].match(/:(.*?);/)[1]
-			var bstr  = atob(arr[1])
-			var n     = bstr.length
-			var u8arr = new Uint8ClampedArray(n)
+		while (n--) {
+			u8arr[n] = bstr.charCodeAt(n)
+		}
+		return new Blob([u8arr], { type: mime })
+	},
+	download: function (base64data, fileName) {
+		if (window.navigator.msSaveBlob) {
+			var blob = this.base64ToBlob(base64data)
+			window.navigator.msSaveBlob(blob, filename)
+			return false;
+		}
 
-			while (n--) {
-				u8arr[n] = bstr.charCodeAt(n)
-			}
-			return new Blob([u8arr], { type: mime })
-		},
+		var a = document.getElementById(this.id_name);
 
-		download: function (base64data, fileName) {
-			if (window.navigator.msSaveBlob) {
-				var blob = this.base64ToBlob(base64data)
-				window.navigator.msSaveBlob(blob, filename)
-				return false;
-			}
+		if (window.URL.createObjectURL) {
+			var blob       = this.base64ToBlob(base64data)
+			var blobUrl    = window.URL.createObjectURL(blob)
 
-			var a = document.getElementById(this.id_name);
-
-			if (window.URL.createObjectURL) {
-				var blob       = this.base64ToBlob(base64data)
-				var blobUrl    = window.URL.createObjectURL(blob)
-
-				a.href     = blobUrl;
-				a.download = fileName;
-				return
-			}
-			if (alink.download === '') {
-				a.href     = base64data
-				a.download = fileName;
-				return
-			}
-		}//end download
+			a.href     = blobUrl;
+			a.download = fileName;
+			return
+		}
+		if (alink.download === '') {
+			a.href     = base64data
+			a.download = fileName;
+			return
+		}
+	}//end download
 	}
 }
 </script>
