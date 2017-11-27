@@ -76,7 +76,18 @@ export default {
 				data.map(function (item, index) {
 					xlsData += '<tr>'
 					for (var i = 0; i < keys.length; i++) {
-						xlsData += '<td>' + item[keys[i]] + '</td>'
+						if (keys[i].indexOf(".") !== -1) {
+							var keyNestedSplit = keys[i].split(".");
+							var valueFromNestedKey = item[keyNestedSplit[0]];
+						
+							for (var j = 1; j < keyNestedSplit.length; j++) {
+								valueFromNestedKey = valueFromNestedKey[keyNestedSplit[j]];
+							}
+
+							xlsData += '<td>' + valueFromNestedKey + '</td>'
+						} else {
+							xlsData += '<td>' + item[keys[i]] + '</td>'
+						}
 					}
 					xlsData += '</tr>'
 				})
