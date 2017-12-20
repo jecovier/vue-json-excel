@@ -26,7 +26,7 @@ export default {
 			type: Array,
 			required: true
 		},
-		'fields':{
+		'param':{
 			type: Object,
 			required: true
 		},
@@ -49,7 +49,7 @@ export default {
 	},
 	methods: {
 		generate_excel: function (){
-	    this.exportXLS(this.data, this.name, this.fields)
+	    this.exportXLS(this.data, this.name, this.param)
 		},
 
 		jsonToXLS: function (data, header) {
@@ -60,7 +60,7 @@ export default {
 				xlsData += '<thead>'
 				for (var key in header) {
 					keys.push(key)
-					xlsData += '<th>' + header[key] + '</th>'
+					xlsData += '<th>' + header + '</th>'
 				}
 				xlsData += '</thead>'
 				xlsData += '<tbody>'
