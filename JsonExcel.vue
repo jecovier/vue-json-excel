@@ -40,7 +40,7 @@ export default {
 		},
 		'meta':{
 			type: Array,
-			default: []
+			default: () => []
 		}
 	},
 	created: function () {
@@ -69,7 +69,7 @@ export default {
 				xlsData += '<thead>'
 				for (var key in header) {
 					keys.push(key)
-					xlsData += '<th>' + header[key] + '</th>'
+					xlsData += '<th>' + key + '</th>'
 				}
 				xlsData += '</thead>'
 				xlsData += '<tbody>'
@@ -108,7 +108,7 @@ export default {
 			
 			if (header) {
 				for (var key in header) {
-					csvData +=  header[key] + ','
+					csvData +=  key + ','
 				}
 				csvData = csvData.slice(0, csvData.length - 1)
 				csvData += '\r\n'
@@ -146,16 +146,16 @@ export default {
 		return new Blob([u8arr], { type: mime })
 	},
 	download: function (base64data, fileName) {
-		if (window.navigator.msSaveBlob) {
-			var blob = this.base64ToBlob(base64data)
-			window.navigator.msSaveBlob(blob, filename)
-			return false;
+    var blob       = this.base64ToBlob(base64data)
+
+    if (window.navigator.msSaveOrOpenBlob) {
+			navigator.msSaveOrOpenBlob(blob, fileName);
+			return
 		}
 
 		var a = document.getElementById(this.id_name);
 
 		if (window.URL.createObjectURL) {
-			var blob       = this.base64ToBlob(base64data)
 			var blobUrl    = window.URL.createObjectURL(blob)
 
 			a.href     = blobUrl;
