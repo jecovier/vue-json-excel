@@ -10,8 +10,6 @@
 </template>
 
 <script>
-	import FileSaver from 'file-saver'
-
 export default {
 	data: function(){
 		return {
@@ -148,9 +146,26 @@ export default {
 		return new Blob([u8arr], { type: mime })
 	},
 	download: function (base64data, fileName) {
-		var blob       = this.base64ToBlob(base64data)
+    var blob       = this.base64ToBlob(base64data)
 
-    	FileSaver.saveAs(blob, fileName);
+    if (window.navigator.msSaveOrOpenBlob) {
+			navigator.msSaveOrOpenBlob(blob, fileName);
+		}
+
+		var a = document.getElementById(this.id_name);
+
+		if (window.URL.createObjectURL) {
+			var blobUrl    = window.URL.createObjectURL(blob)
+
+			a.href     = blobUrl;
+			a.download = fileName;
+			return
+		}
+		if (alink.download === '') {
+			a.href     = base64data
+			a.download = fileName;
+			return
+		}
 	}//end download
 	}
 }
