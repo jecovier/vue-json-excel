@@ -1,12 +1,11 @@
 <template>
-	<a
-		href="#"
+	<div
 		:id="id_name"
 		@click="generate">
 		<slot>
 			{{button_text}}
 		</slot>
-	</a>
+	</div>
 </template>
 
 <script>
