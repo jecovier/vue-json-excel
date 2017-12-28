@@ -115,7 +115,11 @@ export default {
 			}
 			data.map(function (item) {
 				for (var k in item) {
-					csvData += item[k] + ','
+					var escapedCSV = item[k] + ''; // cast Numbers to string
+				 	if (escapedCSV.match(/[,"\n]/)) {
+            			 		escapedCSV = '"' + escapedCSV.replace(/\"/g, "\"\"") + '"';
+			         	}
+				 	csvData += escapedCSV + ',';
 				}
 				csvData = csvData.slice(0, csvData.length - 1)
 				csvData += '\r\n'
