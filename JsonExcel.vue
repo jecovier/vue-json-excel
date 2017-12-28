@@ -10,6 +10,8 @@
 </template>
 
 <script>
+	import download from 'downloadjs'
+
 export default {
 	data: function(){
 		return {
@@ -148,25 +150,7 @@ export default {
 	download: function (base64data, fileName) {
 		var blob       = this.base64ToBlob(base64data)
 
-		if (window.navigator.msSaveOrOpenBlob) {
-			window.navigator.msSaveBlob(blob, filename)
-			return
-		}
-
-		var a = document.getElementById(this.id_name);
-
-		if (window.URL.createObjectURL) {
-			var blobUrl    = window.URL.createObjectURL(blob)
-
-			a.href     = blobUrl;
-			a.download = fileName;
-			return
-		}
-		if (alink.download === '') {
-			a.href     = base64data
-			a.download = fileName;
-			return
-		}
+		download(blob, fileName, 'application/csv')
 	}//end download
 	}
 }
