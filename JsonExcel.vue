@@ -69,7 +69,7 @@ export default {
 				xlsData += '<thead>'
 				for (var key in header) {
 					keys.push(key)
-					xlsData += '<th>' + header[key] + '</th>'
+					xlsData += '<th>' + key + '</th>'
 				}
 				xlsData += '</thead>'
 				xlsData += '<tbody>'
@@ -108,7 +108,7 @@ export default {
 			
 			if (header) {
 				for (var key in header) {
-					csvData +=  header[key] + ','
+					csvData +=  key + ','
 				}
 				csvData = csvData.slice(0, csvData.length - 1)
 				csvData += '\r\n'
