@@ -150,6 +150,7 @@ export default {
 
     if (window.navigator.msSaveOrOpenBlob) {
 			navigator.msSaveOrOpenBlob(blob, fileName);
+			return
 		}
 
 		var a = document.getElementById(this.id_name);

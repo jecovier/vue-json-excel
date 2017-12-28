@@ -27,7 +27,4 @@
     "url": "https://github.com/jecovier/vue-json-excel/issues"
   },
   "homepage": "https://github.com/jecovier/vue-json-excel#readme",
-  "dependencies": {
-    "file-saver": "^1.3.3"
-  }
 }
