@@ -128,11 +128,11 @@ export default {
     },
     exportXLS: function (data, fileName, header) {
 		var XLSData = 'data:application/vnd.ms-excel;base64,' + this.base64(this.jsonToXLS(data, header))
-		this.download(XLSData, fileName)
+		this.download(XLSData, fileName, 'application/vnd.ms-excel')
 	},
     exportCSV: function (data, fileName, keys) {
 		var CSVData = 'data:application/csv;base64,' + this.base64(this.jsonToCSV(data, keys))
-		this.download(CSVData, fileName)
+		this.download(CSVData, fileName, 'application/csv')
 	},
 	base64ToBlob: function (base64Data) {
 		var arr   = base64Data.split(',')
@@ -146,10 +146,10 @@ export default {
 		}
 		return new Blob([u8arr], { type: mime })
 	},
-	download: function (base64data, fileName) {
+	download: function (base64data, fileName, fileType) {
 		var blob       = this.base64ToBlob(base64data)
 
-		download(blob, fileName, 'application/csv')
+		download(blob, fileName, fileType)
 	}//end download
 	}
 }
