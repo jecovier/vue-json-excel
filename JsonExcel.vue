@@ -40,7 +40,7 @@ export default {
 		},
 		'meta':{
 			type: Array,
-			default: []
+			default: [] => ()
 		}
 	},
 	created: function () {
