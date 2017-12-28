@@ -146,16 +146,16 @@ export default {
 		return new Blob([u8arr], { type: mime })
 	},
 	download: function (base64data, fileName) {
-		if (window.navigator.msSaveBlob) {
-			var blob = this.base64ToBlob(base64data)
+		var blob       = this.base64ToBlob(base64data)
+
+		if (window.navigator.msSaveOrOpenBlob) {
 			window.navigator.msSaveBlob(blob, filename)
-			return false;
+			return
 		}
 
 		var a = document.getElementById(this.id_name);
 
 		if (window.URL.createObjectURL) {
-			var blob       = this.base64ToBlob(base64data)
 			var blobUrl    = window.URL.createObjectURL(blob)
 
 			a.href     = blobUrl;
