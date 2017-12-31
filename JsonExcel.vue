@@ -60,7 +60,7 @@ export default {
 				xlsData += '<thead>'
 				for (var key in header) {
 					keys.push(key)
-					xlsData += '<th>' + header + '</th>'
+					xlsData += '<th>' + key + '</th>'
 				}
 				xlsData += '</thead>'
 				xlsData += '<tbody>'
