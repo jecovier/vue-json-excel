@@ -1,5 +1,5 @@
 {
-  "name": "vue-json-excel",
+  "name": "vue-json-to-excel",
   "version": "0.0.7",
   "description": "Download your JSON data as an excel file directly from the browser",
   "main": "JsonExcel.vue",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jecovier/vue-json-excel.git"
+    "url": "git+https://github.com/davodaslanifakor/vue-json-excel"
   },
   "keywords": [
     "vue",
@@ -21,10 +21,10 @@
     "download",
     "component"
   ],
-  "author": "Jose Javier Espinoza",
+  "author": "davodaslanifakor",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jecovier/vue-json-excel/issues"
+    "url": "https://github.com/davodaslanifakor/vue-json-excel/issues"
   },
-  "homepage": "https://github.com/jecovier/vue-json-excel#readme"
+  "homepage": "https://github.com/davodaslanifakor/vue-json-excel#readme"
 }
