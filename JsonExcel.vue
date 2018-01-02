@@ -31,7 +31,7 @@ export default {
 			type: Array,
 			required: true
 		},
-		'fields':{
+		'param':{
 			type: Object,
 			required: true
 		},
