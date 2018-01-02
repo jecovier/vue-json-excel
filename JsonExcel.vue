@@ -1,15 +1,16 @@
 <template>
-	<a
-		href="#"
+	<div
 		:id="id_name"
 		@click="generate">
 		<slot>
 			{{button_text}}
 		</slot>
-	</a>
+	</div>
 </template>
 
 <script>
+	import download from 'downloadjs'
+
 export default {
 	data: function(){
 		return {
@@ -40,7 +41,7 @@ export default {
 		},
 		'meta':{
 			type: Array,
-			default: []
+			default: () => []
 		}
 	},
 	created: function () {
@@ -108,14 +109,18 @@ export default {
 			
 			if (header) {
 				for (var key in header) {
-					csvData +=  header[key] + ','
+					csvData +=  key + ','
 				}
 				csvData = csvData.slice(0, csvData.length - 1)
 				csvData += '\r\n'
 			}
 			data.map(function (item) {
 				for (var k in item) {
-					csvData += item[k] + ','
+					var escapedCSV = item[k] + ''; // cast Numbers to string
+				 	if (escapedCSV.match(/[,"\n]/)) {
+            			 		escapedCSV = '"' + escapedCSV.replace(/\"/g, "\"\"") + '"';
+			         	}
+				 	csvData += escapedCSV + ',';
 				}
 				csvData = csvData.slice(0, csvData.length - 1)
 				csvData += '\r\n'
@@ -127,11 +132,11 @@ export default {
     },
     exportXLS: function (data, fileName, header) {
 		var XLSData = 'data:application/vnd.ms-excel;base64,' + this.base64(this.jsonToXLS(data, header))
-		this.download(XLSData, fileName)
+		this.download(XLSData, fileName, 'application/vnd.ms-excel')
 	},
     exportCSV: function (data, fileName, keys) {
 		var CSVData = 'data:application/csv;base64,' + this.base64(this.jsonToCSV(data, keys))
-		this.download(CSVData, fileName)
+		this.download(CSVData, fileName, 'application/csv')
 	},
 	base64ToBlob: function (base64Data) {
 		var arr   = base64Data.split(',')
@@ -145,28 +150,10 @@ export default {
 		}
 		return new Blob([u8arr], { type: mime })
 	},
-	download: function (base64data, fileName) {
-		if (window.navigator.msSaveBlob) {
-			var blob = this.base64ToBlob(base64data)
-			window.navigator.msSaveBlob(blob, filename)
-			return false;
-		}
+	download: function (base64data, fileName, fileType) {
+		var blob       = this.base64ToBlob(base64data)
 
-		var a = document.getElementById(this.id_name);
-
-		if (window.URL.createObjectURL) {
-			var blob       = this.base64ToBlob(base64data)
-			var blobUrl    = window.URL.createObjectURL(blob)
-
-			a.href     = blobUrl;
-			a.download = fileName;
-			return
-		}
-		if (alink.download === '') {
-			a.href     = base64data
-			a.download = fileName;
-			return
-		}
+		download(blob, fileName, fileType)
 	}//end download
 	}
 }
