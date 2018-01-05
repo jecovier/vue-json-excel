@@ -1,40 +1,35 @@
 <template>
 	<div
-		:id="id_name"
+		:id="idName"
 		@click="generate">
 		<slot>
-			{{button_text}}
+			Download {{name}}
 		</slot>
 	</div>
 </template>
 
 <script>
-	import download from 'downloadjs'
+import download from 'downloadjs'
 
 export default {
-	data: function(){
-		return {
-			animate   : true,
-			animation : '',
-		}
-	},
 	props: {
+		// mime type [xls, csv], default: xls
 		'type' : {
 			type: String,
 			default: "xls"
 		},
-		'button_text': {
-			type: String,
-			default: "Download Excel"
-		},
+		// Json to download
 		'data':{
 			type: Array,
 			required: true
 		},
+		// fields inside the Json Object that you want to export
+		// if no given, all the properties in the Json are exported
 		'fields':{
 			type: Object,
 			required: true
 		},
+		// filename to export, deault: data.xls
 		'name':{
 			type: String,
 			default: "data.xls"
@@ -44,117 +39,134 @@ export default {
 			default: () => []
 		}
 	},
-	created: function () {
-	},
 	computed:{
-		id_name : function(){
+		// unique identifier
+		idName : function(){
 			var now = new Date().getTime();
 			return 'export_'+now;
 		}
 	},
 	methods: {
 		generate() {
-			if (this.type == 'csv') {
-				return this.exportCSV(this.data, this.name, this.fields);
+			alert(this.type);
+			if(!this.data.length){
+				return
 			}
-			return this.exportXLS(this.data, this.name, this.fields);
-		},
-		generate_excel: function () {
-	    	this.exportXLS(this.data, this.name, this.fields)
-		},
-		jsonToXLS: function (data, header) {
-			var xlsTemp = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta name=ProgId content=Excel.Sheet> <meta name=Generator content="Microsoft Excel 11"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>${table}</table></body></html>'
-
-			var xlsData = '', keys = []
-			if (header) {
-				xlsData += '<thead>'
-				for (var key in header) {
-					keys.push(key)
-					xlsData += '<th>' + key + '</th>'
-				}
-				xlsData += '</thead>'
-				xlsData += '<tbody>'
-				data.map(function (item, index) {
-					xlsData += '<tr>'
-					for (var i = 0; i < keys.length; i++) {
-						if (keys[i].indexOf(".") !== -1) {
-							var keyNestedSplit = keys[i].split(".");
-							var valueFromNestedKey = item[keyNestedSplit[0]];
-						
-							for (var j = 1; j < keyNestedSplit.length; j++) {
-								valueFromNestedKey = valueFromNestedKey[keyNestedSplit[j]];
-							}
-
-							xlsData += '<td>' + valueFromNestedKey + '</td>'
-						} else {
-							xlsData += '<td>' + item[keys[i]] + '</td>'
-						}
-					}
-					xlsData += '</tr>'
-				})
-				xlsData += '</tbody>'
-				return xlsTemp.replace('${table}', xlsData)
+			let json = this.getProcessedJson(this.data, this.fields)
+			if(this.type == 'csv'){
+				return this.export(this.jsonToCSV(json), this.name, "application/csv");
 			}
+			return this.export(this.jsonToXLS(json), this.name, "application/vnd.ms-excel");
+		},
+		/*
+		Use downloadjs to generate the download link
+		*/
+		export: function (data, filename, mime) {
+			let blob = this.base64ToBlob(data, mime)
+			download(blob, filename, mime)
+		},
+		/*
+		jsonToXLS
+		---------------
+		Transform json data into an xml document with MS Excel format, sadly
+		this format show a prompt when open due to a default behavior
+		on Microsoft office. It's recommended to use CSV format instead.
+		*/
+		jsonToXLS: function (data) {
+			let xlsTemp = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta name=ProgId content=Excel.Sheet> <meta name=Generator content="Microsoft Excel 11"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>${table}</table></body></html>'
+			let xlsData = '<thead>'
+			for (let key in data[0]) {
+				xlsData += '<th>' + key + '</th>'
+			}
+			xlsData += '</thead>'
+			xlsData += '<tbody>'
+
 			data.map(function (item, index) {
 				xlsData += '<tbody><tr>'
-				for (var key in item) {
+				for (let key in item) {
 					xlsData += '<td>' + item[key] + '</td>'
 				}
 				xlsData += '</tr></tbody>'
 			})
 			return xlsTemp.replace('${table}', xlsData)
-	  },
-		jsonToCSV: function (data, header) {
+		},
+		/*
+		jsonToCSV
+		---------------
+		Transform json data into an CSV file.
+		*/
+		jsonToCSV: function (data) {
 			var csvData = ''
-			
-			if (header) {
-				for (var key in header) {
-					csvData +=  key + ','
-				}
-				csvData = csvData.slice(0, csvData.length - 1)
-				csvData += '\r\n'
+			for (let key in data[0]) {
+				csvData +=  key + ','
 			}
+			csvData = csvData.slice(0, csvData.length - 1)
+			csvData += '\r\n'
+
 			data.map(function (item) {
-				for (var k in item) {
-					var escapedCSV = item[k] + ''; // cast Numbers to string
-				 	if (escapedCSV.match(/[,"\n]/)) {
-            			 		escapedCSV = '"' + escapedCSV.replace(/\"/g, "\"\"") + '"';
-			         	}
-				 	csvData += escapedCSV + ',';
+				for (let key in item) {
+					let escapedCSV = item[key] + '' // cast Numbers to string
+					if (escapedCSV.match(/[,"\n]/)) {
+						escapedCSV = '"' + escapedCSV.replace(/\"/g, "\"\"") + '"'
+					}
+					csvData += escapedCSV + ','
 				}
 				csvData = csvData.slice(0, csvData.length - 1)
 				csvData += '\r\n'
 			})
 			return csvData
-	  },
-    base64: function (s) {
-	    return window.btoa(window.unescape(encodeURIComponent(s)))
-    },
-    exportXLS: function (data, fileName, header) {
-		var XLSData = 'data:application/vnd.ms-excel;base64,' + this.base64(this.jsonToXLS(data, header))
-		this.download(XLSData, fileName, 'application/vnd.ms-excel')
-	},
-    exportCSV: function (data, fileName, keys) {
-		var CSVData = 'data:application/csv;base64,' + this.base64(this.jsonToCSV(data, keys))
-		this.download(CSVData, fileName, 'application/csv')
-	},
-	base64ToBlob: function (base64Data) {
-		var arr   = base64Data.split(',')
-		var mime  = arr[0].match(/:(.*?);/)[1]
-		var bstr  = atob(arr[1])
-		var n     = bstr.length
-		var u8arr = new Uint8ClampedArray(n)
+		},
+		/*
+		getProcessedJson
+		---------------
+		Get only the data to export, if no fields are set return all the data
+		*/
+		getProcessedJson: function(data, header){
+			let keys = this.getKeys(data, header)
+			let newData = []
+			let _self = this
+			data.map(function (item, index) {
+				let newItem = {}
+				for( let label in keys){
+					var iii= item;
+					let property = keys[label]
+					newItem[label] = _self.getNestedData(property, item)
+				}
+				newData.push(newItem)
+			})
 
-		while (n--) {
-			u8arr[n] = bstr.charCodeAt(n)
-		}
-		return new Blob([u8arr], { type: mime })
-	},
-	download: function (base64data, fileName, fileType) {
-		var blob       = this.base64ToBlob(base64data)
+			return newData
+		},
+		getKeys: function(data, header){
+			if( header ){
+				return header
+			}
 
-		download(blob, fileName, fileType)
-	}//end download
-	}
+			let keys = {}
+			for (let key in data[0]) {
+				keys[key] = key
+			}
+			return keys
+		},
+		getNestedData: function(key, item) {
+			let valueFromNestedKey = null
+			let keyNestedSplit = key.split(".")
+			valueFromNestedKey = item[keyNestedSplit[0]]
+			for (let j = 1; j < keyNestedSplit.length; j++) {
+				valueFromNestedKey = valueFromNestedKey[keyNestedSplit[j]]
+			}
+			return valueFromNestedKey;
+		},
+		base64ToBlob: function (data, mime) {
+			let base64 = window.btoa(window.unescape(encodeURIComponent(data)))
+			let bstr   = atob(base64)
+			let n      = bstr.length
+			let u8arr  = new Uint8ClampedArray(n)
+			while (n--) {
+				u8arr[n] = bstr.charCodeAt(n)
+			}
+			return new Blob([u8arr], { type: mime })
+		},
+	} // end methods
 }
 </script>
