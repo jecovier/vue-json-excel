@@ -25,27 +25,31 @@ const app = new Vue({
 	el: '#app',
 	data: {
 		json_fields : {
-		    "name"      : "String",
-		    "city"      : "String",
-		    "country"   : "String",
-		    "birthdate" : "String",
-		    "amount"    : "Number"
+	    "Complete name" : "name",
+	    "City" : "city",
+	    "Telephone" : "phone.landline",
 		},
 		json_data : [
-		    {
-		        "name"      : "Tony Peña",
-		        "city"      : "New York",
-		        "country"   : "United States",
-		        "birthdate" : "1978-03-15",
-		        "amount"    : 42
-		    },
-		    {
-		        "name"      : "Thessaloniki",
-		        "city"      : "Athens",
-		        "country"   : "Greece",
-		        "birthdate" : "1987-11-23",
-		        "amount"    : 42
-		    }
+	    {
+        "name"      : "Tony Peña",
+        "city"      : "New York",
+        "country"   : "United States",
+        "birthdate" : "1978-03-15",
+        "phone" : {
+					"mobile" : "1-541-754-3010"
+					"landline" : "(541) 754-3010"
+				}
+	    },
+	    {
+        "name"      : "Thessaloniki",
+        "city"      : "Athens",
+        "country"   : "Greece",
+        "birthdate" : "1987-11-23",
+        "phone" : {
+					"mobile" : "+1 855 275 5071"
+					"landline" : "(2741) 2621-244"
+				}
+	    }
 		],
 		json_meta: [
 			[{
@@ -68,8 +72,11 @@ In your HTML call it like
 
 </download-excel>
 ```
-json_data contains the data you want to export, json_fields is a type mapping
-for the fields in the json, name is the file name.
+json_data: Contains the data you want to export,
+json_fields: You can select what fields to export, especify nested data and assign labels to the fields
+the key is the label, the value is the JSON field.
+type: xls o csv, xls is the default value.
+name: filename of the document you donwload.
 
 ## Export CSV
 To export JSON to CSV file just add the prop type with value "csv":
