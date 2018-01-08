@@ -1,6 +1,6 @@
 {
   "name": "vue-json-excel",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Download your JSON data as an excel file directly from the browser",
   "main": "JsonExcel.vue",
   "scripts": {
