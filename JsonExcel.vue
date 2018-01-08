@@ -29,6 +29,11 @@ export default {
 			type: Object,
 			required: true
 		},
+		// Title for the data
+		'title':{
+			type: String,
+			default: null
+		},
 		// filename to export, deault: data.xls
 		'name':{
 			type: String,
@@ -74,11 +79,16 @@ export default {
 		*/
 		jsonToXLS: function (data) {
 			let xlsTemp = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta name=ProgId content=Excel.Sheet> <meta name=Generator content="Microsoft Excel 11"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>${table}</table></body></html>'
-			let xlsData = '<thead>'
+			let xlsData = '<thead><tr>'
+
+			if( this.title != null ){
+				xlsData += '<tr><th colspan="'+Object.keys(data[0]).length+'">'+this.title+'<th></tr>'
+			}
+
 			for (let key in data[0]) {
 				xlsData += '<th>' + key + '</th>'
 			}
-			xlsData += '</thead>'
+			xlsData += '</tr></thead>'
 			xlsData += '<tbody>'
 
 			data.map(function (item, index) {
@@ -97,6 +107,11 @@ export default {
 		*/
 		jsonToCSV: function (data) {
 			var csvData = ''
+
+			if( this.title != null ){
+				csvData += this.title+'\r\n'
+			}
+
 			for (let key in data[0]) {
 				csvData +=  key + ','
 			}

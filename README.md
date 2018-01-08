@@ -72,11 +72,15 @@ In your HTML call it like
 
 </download-excel>
 ```
+REQUIRED
 json_data: Contains the data you want to export,
 json_fields: You can select what fields to export, especify nested data and assign labels to the fields
 the key is the label, the value is the JSON field.
+
+OPTIONAL
 type: xls o csv, xls is the default value.
 name: filename of the document you donwload.
+title: Add a title above the datagrid
 
 ## Export CSV
 To export JSON to CSV file just add the prop type with value "csv":
