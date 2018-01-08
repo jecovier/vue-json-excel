@@ -53,7 +53,6 @@ export default {
 	},
 	methods: {
 		generate() {
-			alert(this.type);
 			if(!this.data.length){
 				return
 			}
