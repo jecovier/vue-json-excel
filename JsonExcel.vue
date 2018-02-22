@@ -168,7 +168,7 @@ export default {
 			for (let j = 1; j < keyNestedSplit.length; j++) {
 				valueFromNestedKey = valueFromNestedKey[keyNestedSplit[j]]
 			}
-			return valueFromNestedKey;
+			return valueFromNestedKey == null?'':valueFromNestedKey;
 		},
 		base64ToBlob: function (data, mime) {
 			let base64 = window.btoa(window.unescape(encodeURIComponent(data)))
