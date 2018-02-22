@@ -31,7 +31,6 @@ export default {
 		},
 		// Title for the data
 		'title':{
-			type: String,
 			default: null
 		},
 		// filename to export, deault: data.xls
@@ -81,7 +80,14 @@ export default {
 			let xlsData = '<thead><tr>'
 
 			if( this.title != null ){
-				xlsData += '<tr><th colspan="'+Object.keys(data[0]).length+'">'+this.title+'<th></tr>'
+				if( Array.isArray(this.title) ){
+					for (var i = 0; i < this.title.length; i++) {
+						xlsData += '<th colspan="'+Object.keys(data[0]).length+'">'+this.title[i]+'<th></tr><tr>'
+					}
+				}
+				else{
+					xlsData += '<th colspan="'+Object.keys(data[0]).length+'">'+this.title+'<th></tr><tr>'
+				}
 			}
 
 			for (let key in data[0]) {
@@ -108,7 +114,14 @@ export default {
 			var csvData = ''
 
 			if( this.title != null ){
-				csvData += this.title+'\r\n'
+				if( Array.isArray(this.title) ){
+					for (var i = 0; i < this.title.length; i++) {
+						csvData += this.title[i]+'\r\n'
+					}
+				}
+				else{
+					csvData += this.title+'\r\n'
+				}
 			}
 
 			for (let key in data[0]) {
@@ -142,6 +155,7 @@ export default {
 			data.map(function (item, index) {
 				let newItem = {}
 				for( let label in keys){
+					var iii= item;
 					let property = keys[label]
 					newItem[label] = _self.getNestedData(property, item)
 				}
@@ -168,7 +182,7 @@ export default {
 			for (let j = 1; j < keyNestedSplit.length; j++) {
 				valueFromNestedKey = valueFromNestedKey[keyNestedSplit[j]]
 			}
-			return valueFromNestedKey == null?'':valueFromNestedKey;
+			return valueFromNestedKey;
 		},
 		base64ToBlob: function (data, mime) {
 			let base64 = window.btoa(window.unescape(encodeURIComponent(data)))
