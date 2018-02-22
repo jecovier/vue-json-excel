@@ -142,7 +142,6 @@ export default {
 			data.map(function (item, index) {
 				let newItem = {}
 				for( let label in keys){
-					var iii= item;
 					let property = keys[label]
 					newItem[label] = _self.getNestedData(property, item)
 				}
