@@ -27,7 +27,13 @@ const app = new Vue({
         json_fields: {
             'Complete name': 'name',
             'City': 'city',
-            'Telephone': 'phone.landline',
+            'Telephone': 'phone.mobile',
+            'Telephone 2' : {
+                field: 'phone.landline',
+                callback: (value) => {
+                    return `Landline Phone - ${value}`;
+                }
+            },
         },
         json_data: [
             {
@@ -79,8 +85,21 @@ In your HTML call it like
 REQUIRED
 - json_data: Contains the data you want to export,
 - json_fields: You can select what fields to export, especify nested data and assign labels to the fields
-the key is the label, the value is the JSON field.
-
+the key is the label, the value is the JSON field. This will export the field data 'as is'.
+    If you need to customize the the exported data you can define a callback function. Thanks to @gucastiliao.
+```js
+let json_fields = {
+    // regular field (exported data 'as is')
+    fieldLabel: attributeName, // nested attribute supported
+    // callback function for data formatting
+    anotherFieldLabel: {
+        field: anotherAttributeName, // nested attribute supported
+        callback: (value) => {
+            return `formatted value ${value}`
+        }
+    },
+}
+```
 OPTIONAL
 - type: xls o csv, xls is the default value.
 - name: filename of the document you donwload.
