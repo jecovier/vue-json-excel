@@ -42,7 +42,7 @@ const app = new Vue({
                 'country': 'United States',
                 'birthdate': '1978-03-15',
                 'phone': {
-                    'mobile': '1-541-754-3010'
+                    'mobile': '1-541-754-3010',
                     'landline': '(541) 754-3010'
                 }
             },
@@ -52,7 +52,7 @@ const app = new Vue({
                 'country': 'Greece',
                 'birthdate': '1987-11-23',
                 'phone': {
-                    'mobile': '+1 855 275 5071'
+                    'mobile': '+1 855 275 5071',
                     'landline': '(2741) 2621-244'
                 }
             }
