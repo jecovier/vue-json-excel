@@ -2,8 +2,12 @@
 Download your JSON data as an excel file directly from the browser. This component it's based on the solution proposed on this thread https://stackoverflow.com/questions/17142427/javascript-to-export-html-table-to-excel
 
 # FIX
+[20-30-2018] Thanks to @gucastiliao and @gusehr for json callback feature, now you can preproccess the data using a callback function. See the description on how to use it.
+
 [02-01-2018] Thanks to @gucastiliao for json nested support, @ryatziv for the multiples fixes, @DrLongGhost for CSV data escaping, @davodaslanifakor for key header fix
+
 [11-18-2017] Thanks to @msonowal now you can export to CSV, just add the prop: type="csv"
+
 [03-08-2017] downloaded file works with Microsoft Office
 
 
