@@ -105,7 +105,7 @@ let json_fields = {
 }
 ```
 OPTIONAL
-- type: xls o csv, xls is the default value.
+- type: xls or csv, xls is the default value.
 - name: filename of the document you donwload.
 - title: Add a title above the datagrid
 
