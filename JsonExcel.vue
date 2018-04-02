@@ -18,6 +18,10 @@ export default {
 			type: String,
 			default: "xls"
 		},
+		'header' : {
+			type: Boolean,
+			default: true
+		},
 		// Json to download
 		'data':{
 			type: Array,
@@ -77,7 +81,7 @@ export default {
 		*/
 		jsonToXLS: function (data) {
 			let xlsTemp = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta name=ProgId content=Excel.Sheet> <meta name=Generator content="Microsoft Excel 11"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>${table}</table></body></html>'
-			let xlsData = '<thead><tr>'
+			let xlsData = '<thead>'
 
 			if( this.title != null ){
 				if( Array.isArray(this.title) ){
@@ -90,12 +94,13 @@ export default {
 				}
 			}
 
-			for (let key in data[0]) {
-				xlsData += '<th>' + key + '</th>'
+			if(this.header){
+				for (let key in data[0]) {
+					xlsData += '<th>' + key + '</th>'
+				}
+				xlsData += '</tr></thead>'
+				xlsData += '<tbody>'
 			}
-			xlsData += '</tr></thead>'
-			xlsData += '<tbody>'
-
 			data.map(function (item, index) {
 				xlsData += '<tbody><tr>'
 				for (let key in item) {
@@ -124,12 +129,14 @@ export default {
 				}
 			}
 
-			for (let key in data[0]) {
-				csvData +=  key + ','
-			}
+			if(this.header){
+				for (let key in data[0]) {
+					csvData +=  key + ','
+				}
+
 			csvData = csvData.slice(0, csvData.length - 1)
 			csvData += '\r\n'
-
+			}
 			data.map(function (item) {
 				for (let key in item) {
 					let escapedCSV = item[key] + '' // cast Numbers to string
@@ -161,7 +168,6 @@ export default {
 				}
 				newData.push(newItem)
 			})
-
 			return newData
 		},
 		getKeys: function(data, header){
@@ -175,26 +181,13 @@ export default {
 			}
 			return keys
 		},
-		callItemCallback: function(field, itemValue) {
-			if (typeof field === 'object' && typeof field.callback === 'function') {
-				return field.callback(itemValue);
-			}
-
-			return itemValue;
-		},
 		getNestedData: function(key, item) {
-			const field = (typeof key === 'object') ? key.field : key;
-
 			let valueFromNestedKey = null
-			let keyNestedSplit = field.split(".")
-
+			let keyNestedSplit = key.split(".")
 			valueFromNestedKey = item[keyNestedSplit[0]]
 			for (let j = 1; j < keyNestedSplit.length; j++) {
 				valueFromNestedKey = valueFromNestedKey[keyNestedSplit[j]]
 			}
-
-			valueFromNestedKey = this.callItemCallback(key, valueFromNestedKey);
-
 			return valueFromNestedKey;
 		},
 		base64ToBlob: function (data, mime) {
