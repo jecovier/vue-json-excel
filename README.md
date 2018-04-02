@@ -108,6 +108,7 @@ OPTIONAL
 - type: xls or csv, xls is the default value.
 - name: filename of the document you donwload.
 - title: Add a title above the datagrid
+- and you can also hide header by add this prop `:header="false"`
 
 ## Export CSV
 To export JSON to CSV file just add the prop type with value "csv":
