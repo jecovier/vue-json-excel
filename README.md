@@ -107,7 +107,10 @@ let json_fields = {
 OPTIONAL
 - type: xls o csv, xls is the default value.
 - name: filename of the document you donwload.
-- title: Add a title above the datagrid
+- title: Add a title above the datagrid, you can also pass a array with differents titles like:
+```js
+  title = ["user: 000001","USER REPORT", "Title 3"]
+```
 
 ## Export CSV
 To export JSON to CSV file just add the prop type with value "csv":
