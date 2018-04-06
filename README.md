@@ -2,7 +2,7 @@
 Download your JSON data as an excel file directly from the browser. This component it's based on the solution proposed on this thread https://stackoverflow.com/questions/17142427/javascript-to-export-html-table-to-excel
 
 # FIX
-[20-30-2018] Thanks to @gucastiliao and @gusehr for json callback feature, now you can preproccess the data using a callback function. See the description on how to use it.
+[20-03-2018] Thanks to @gucastiliao and @gusehr for json callback feature, now you can preproccess the data using a callback function. See the description on how to use it.
 
 [02-01-2018] Thanks to @gucastiliao for json nested support, @ryatziv for the multiples fixes, @DrLongGhost for CSV data escaping, @davodaslanifakor for key header fix
 
@@ -105,12 +105,13 @@ let json_fields = {
 }
 ```
 OPTIONAL
-- type: xls o csv, xls is the default value.
+- type: xls or csv, xls is the default value.
 - name: filename of the document you donwload.
 - title: Add a title above the datagrid, you can also pass a array with differents titles like:
 ```js
   title = ["user: 000001","USER REPORT", "Title 3"]
 ```
+- and you can also hide header by add this prop `:header="false"`
 
 ## Export CSV
 To export JSON to CSV file just add the prop type with value "csv":
