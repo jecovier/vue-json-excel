@@ -29,6 +29,12 @@ export default {
 			type: Object,
 			required: true
 		},
+		// fields format inside the Json Object that you want to export
+		// if no given, format to fields default
+		'format':{
+			type: Object,
+			default: null
+		},
 		// Title for the data
 		'title':{
 			default: null
@@ -55,7 +61,7 @@ export default {
 			if(!this.data.length){
 				return
 			}
-			let json = this.getProcessedJson(this.data, this.fields)
+			let json = this.getProcessedJson(this.data, this.fields, this.format)
 			if(this.type == 'csv'){
 				return this.export(this.jsonToCSV(json), this.name, "application/csv");
 			}
@@ -99,7 +105,7 @@ export default {
 			data.map(function (item, index) {
 				xlsData += '<tbody><tr>'
 				for (let key in item) {
-					xlsData += '<td>' + item[key] + '</td>'
+					xlsData += '<td style="' + item[key].style + '">' + item[key].value + '</td>'
 				}
 				xlsData += '</tr></tbody>'
 			})
@@ -132,7 +138,7 @@ export default {
 
 			data.map(function (item) {
 				for (let key in item) {
-					let escapedCSV = item[key] + '' // cast Numbers to string
+					let escapedCSV = item[key].value + '' // cast Numbers to string
 					if (escapedCSV.match(/[,"\n]/)) {
 						escapedCSV = '"' + escapedCSV.replace(/\"/g, "\"\"") + '"'
 					}
@@ -148,16 +154,21 @@ export default {
 		---------------
 		Get only the data to export, if no fields are set return all the data
 		*/
-		getProcessedJson: function(data, header){
+		getProcessedJson: function(data, header, format){
+			if( format == null ){
+				format = {}
+			}
 			let keys = this.getKeys(data, header)
 			let newData = []
 			let _self = this
 			data.map(function (item, index) {
 				let newItem = {}
 				for( let label in keys){
-					var iii= item;
 					let property = keys[label]
-					newItem[label] = _self.getNestedData(property, item)
+					newItem[label] = {
+						'value': _self.getNestedData(property, item),
+						'style': format[property] ? format[property] : ''
+					}
 				}
 				newData.push(newItem)
 			})

@@ -111,6 +111,24 @@ OPTIONAL
 ```js
   title = ["user: 000001","USER REPORT", "Title 3"]
 ```
+- json_format: fields format inside the Json Object that you want to export,
+if no given, format to fields default http://cosicimiento.blogspot.com.ar/2008/11/styling-excel-cells-with-mso-number.html
+```html
+<download-excel
+	...
+	:format = "json_format"
+	...>
+</download-excel>
+```
+```js
+  json_format: {
+    "numeric": "mso-number-format:'0'",
+    "float": "mso-number-format:'0.00'",
+    "date": "mso-number-format:'mm/dd/yyyy'",
+    "time": "mso-number-format:'Short Time'",
+    "text": "mso-number-format:'@'"
+  }
+```
 
 ## Export CSV
 To export JSON to CSV file just add the prop type with value "csv":
