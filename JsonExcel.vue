@@ -138,7 +138,7 @@ export default {
 
 			data.map(function (item) {
 				for (let key in item) {
-					let escapedCSV = item[key] + '' // cast Numbers to string
+					let escapedCSV = item[key].value + '' // cast Numbers to string
 					if (escapedCSV.match(/[,"\n]/)) {
 						escapedCSV = '"' + escapedCSV.replace(/\"/g, "\"\"") + '"'
 					}
