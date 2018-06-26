@@ -18,6 +18,10 @@ export default {
 			type: String,
 			default: "xls"
 		},
+		'undefinedFieldDefaultValue' : {
+			type: String,
+			default: "undefined"
+		},
 		// Json to download
 		'data':{
 			type: Array,
@@ -62,7 +66,7 @@ export default {
 			return this.export(this.jsonToXLS(json), this.name, "application/vnd.ms-excel");
 		},
 		/*
-		Use downloadjs to generate the download link
+		    Use downloadjs to generate the download link
 		*/
 		export: function (data, filename, mime) {
 			let blob = this.base64ToBlob(data, mime)
@@ -192,8 +196,11 @@ export default {
 			for (let j = 1; j < keyNestedSplit.length; j++) {
 				valueFromNestedKey = valueFromNestedKey[keyNestedSplit[j]]
 			}
-
+            
 			valueFromNestedKey = this.callItemCallback(key, valueFromNestedKey);
+            if(valueFromNestedKey===undefined){
+                valueFromNestedKey = this.undefinedFieldDefaultValue;
+            }
 
 			return valueFromNestedKey;
 		},
