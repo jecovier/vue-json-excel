@@ -26,8 +26,7 @@ export default {
 		// fields inside the Json Object that you want to export
 		// if no given, all the properties in the Json are exported
 		'fields':{
-			type: Object,
-			required: true
+			type: Object
 		},
 		// Title for the data
 		'title':{
