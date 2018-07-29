@@ -2,7 +2,8 @@
 
 Download your JSON data as an excel file directly from the browser. This component it's based on the solution proposed on this thread https://stackoverflow.com/questions/17142427/javascript-to-export-html-table-to-excel
 
-###Important! Extra prompt in Microsoft Excel
+### Important! Extra prompt in Microsoft Excel
+
 **The method implemented in this component use HTML tables to draw the .xls files, Microsoft Excel no longer recognize HTML as native content so will prompt a warning message before open the file. The content will be rendered perfectly but the message can't be avoid.**
 
 
