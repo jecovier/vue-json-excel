@@ -35,8 +35,12 @@ export default {
 			type: Object,
 			required: false
 		},
-		// Title for the data
+		// Title for the data, could be a string or a string array
 		'title':{
+			default: null
+		},
+		// footer for the data, could be a string or a string array
+		'footer':{
 			default: null
 		},
 		// filename to export, deault: data.xls
@@ -78,7 +82,7 @@ export default {
 		/*
 		Use downloadjs to generate the download link
 		*/
-		export: function (data, filename, mime) {
+		export (data, filename, mime) {
 			let blob = this.base64ToBlob(data, mime)
 			download(blob, filename, mime)
 		},
@@ -89,27 +93,22 @@ export default {
 		this format show a prompt when open due to a default behavior
 		on Microsoft office. It's recommended to use CSV format instead.
 		*/
-		jsonToXLS: function (data) {
+		jsonToXLS (data) {
 			let xlsTemp = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta name=ProgId content=Excel.Sheet> <meta name=Generator content="Microsoft Excel 11"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>${table}</table></body></html>'
 			let xlsData = '<thead><tr>'
+			const colspan = Object.keys(data[0]).length
 
+			//Header
 			if( this.title != null ){
-				if( Array.isArray(this.title) ){
-					for (var i = 0; i < this.title.length; i++) {
-						xlsData += '<th colspan="'+Object.keys(data[0]).length+'">'+this.title[i]+'<th></tr><tr>'
-					}
-				}
-				else{
-					xlsData += '<th colspan="'+Object.keys(data[0]).length+'">'+this.title+'<th></tr><tr>'
-				}
+				xlsData += this.parseExtraData(this.title, '<th colspan="'+colspan+'">${data}<th></tr><tr>')
 			}
-
+			//Fields
 			for (let key in data[0]) {
 				xlsData += '<th>' + key + '</th>'
 			}
 			xlsData += '</tr></thead>'
 			xlsData += '<tbody>'
-
+			//Data
 			data.map(function (item, index) {
 				xlsData += '<tbody><tr>'
 				for (let key in item) {
@@ -117,6 +116,12 @@ export default {
 				}
 				xlsData += '</tr></tbody>'
 			})
+			//Footer
+			if( this.footer != null ){
+				xlsData += '<tfooter><tr>'
+				xlsData += this.parseExtraData(this.footer, '<td colspan="'+colspan+'">${data}<td></tr><tr>')
+				xlsData += '</tr></tfooter>'
+			}
 			return xlsTemp.replace('${table}', xlsData)
 		},
 		/*
@@ -124,26 +129,19 @@ export default {
 		---------------
 		Transform json data into an CSV file.
 		*/
-		jsonToCSV: function (data) {
+		jsonToCSV (data) {
 			var csvData = ''
-
+			//Header
 			if( this.title != null ){
-				if( Array.isArray(this.title) ){
-					for (var i = 0; i < this.title.length; i++) {
-						csvData += this.title[i]+'\r\n'
-					}
-				}
-				else{
-					csvData += this.title+'\r\n'
-				}
+				csvData += this.parseExtraData(this.title, '${data}\r\n')
 			}
-
+			//Fields
 			for (let key in data[0]) {
 				csvData +=  key + ','
 			}
 			csvData = csvData.slice(0, csvData.length - 1)
 			csvData += '\r\n'
-
+			//Data
 			data.map(function (item) {
 				for (let key in item) {
 					let escapedCSV = item[key] + '' // cast Numbers to string
@@ -155,6 +153,10 @@ export default {
 				csvData = csvData.slice(0, csvData.length - 1)
 				csvData += '\r\n'
 			})
+			//Footer
+			if( this.footer != null ){
+				csvData += this.parseExtraData(this.footer, '${data}\r\n')
+			}
 			return csvData
 		},
 		/*
@@ -189,29 +191,33 @@ export default {
 			}
 			return keys
 		},
-		callItemCallback: function(field, itemValue) {
-			if (typeof field === 'object' && typeof field.callback === 'function') {
-				return field.callback(itemValue);
+		/*
+		parseExtraData
+		---------------
+		Parse title and footer attribute to the csv format
+		*/
+		parseExtraData(extraData, format){
+			let parseData = ''
+			if( Array.isArray(extraData) ){
+				for (var i = 0; i < extraData.length; i++) {
+					parseData += format.replace('${data}', extraData[i])
+				}
 			}
-
-			return itemValue;
+			else{
+				parseData += format.replace('${data}', extraData)
+			}
+			return parseData
 		},
 		getNestedData: function(key, item) {
-			const field = (typeof key === 'object') ? key.field : key;
-
 			let valueFromNestedKey = null
-			let keyNestedSplit = field.split(".")
-
+			let keyNestedSplit = key.split(".")
 			valueFromNestedKey = item[keyNestedSplit[0]]
 			for (let j = 1; j < keyNestedSplit.length; j++) {
 				valueFromNestedKey = valueFromNestedKey[keyNestedSplit[j]]
 			}
-
-			valueFromNestedKey = this.callItemCallback(key, valueFromNestedKey);
-
 			return valueFromNestedKey;
 		},
-		base64ToBlob: function (data, mime) {
+		base64ToBlob (data, mime) {
 			let base64 = window.btoa(window.unescape(encodeURIComponent(data)))
 			let bstr   = atob(base64)
 			let n      = bstr.length
