@@ -44,7 +44,7 @@ In your template
 | footer    | string/Array | Footer(s) for the data, could be a string or an array of strings (multiple footers) |
 
 
-##Example
+## Example
 
 ```js
 import Vue from 'vue'
@@ -132,7 +132,6 @@ let json_fields = {
 }
 
 ## Export CSV
-
 To export JSON to CSV file just add the prop type with value "csv":
 
 ```html
