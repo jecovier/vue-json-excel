@@ -30,7 +30,7 @@ In your template
 </download-excel>
 ```
 
-##Props List
+## Props List
 
 | Name             | Type  | Description |
 | :---             | :---: | ---         |
