@@ -27,7 +27,13 @@ export default {
 		// if no given, all the properties in the Json are exported
 		'fields':{
 			type: Object,
-			required: true
+			required: false
+		},
+		// this prop is used to fix the problem with other components that use the
+		// variable fields, like vee-validate. exportFields works exactly like fields
+		'exportFields':{
+			type: Object,
+			required: false
 		},
 		// Title for the data
 		'title':{
@@ -48,6 +54,14 @@ export default {
 		idName : function(){
 			var now = new Date().getTime();
 			return 'export_'+now;
+		},
+
+		downloadFields: function(){
+			if(this.fields !== undefined)
+				return this.fields
+			
+			if(this.exportFields !== undefined)
+				return this.exportFields
 		}
 	},
 	methods: {
@@ -55,7 +69,7 @@ export default {
 			if(!this.data.length){
 				return
 			}
-			let json = this.getProcessedJson(this.data, this.fields)
+			let json = this.getProcessedJson(this.data, this.downloadFields)
 			if(this.type == 'csv'){
 				return this.export(this.jsonToCSV(json), this.name, "application/csv");
 			}
