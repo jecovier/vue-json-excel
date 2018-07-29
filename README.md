@@ -130,6 +130,7 @@ let json_fields = {
         }
     },
 }
+```
 
 ## Export CSV
 To export JSON to CSV file just add the prop type with value "csv":
