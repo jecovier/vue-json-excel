@@ -1,17 +1,12 @@
 # JSON to Excel for VUE 2
+
 Download your JSON data as an excel file directly from the browser. This component it's based on the solution proposed on this thread https://stackoverflow.com/questions/17142427/javascript-to-export-html-table-to-excel
 
-# FIX
-[20-30-2018] Thanks to @gucastiliao and @gusehr for json callback feature, now you can preproccess the data using a callback function. See the description on how to use it.
-
-[02-01-2018] Thanks to @gucastiliao for json nested support, @ryatziv for the multiples fixes, @DrLongGhost for CSV data escaping, @davodaslanifakor for key header fix
-
-[11-18-2017] Thanks to @msonowal now you can export to CSV, just add the prop: type="csv"
-
-[03-08-2017] downloaded file works with Microsoft Office
+###Important! Extra prompt in Microsoft Excel
+**The method implemented in this component use HTML tables to draw the .xls files, Microsoft Excel no longer recognize HTML as native content so will prompt a warning message before open the file. The content will be rendered perfectly but the message can't be avoid.**
 
 
-## ✔ Getting started
+## Getting started
 
 Get the package:
 ```bash
@@ -19,6 +14,35 @@ npm install vue-json-excel
 ```
 
 Register JsonExcel in your app entrypoint:
+```js
+import Vue from 'vue'
+import JsonExcel from 'vue-json-excel'
+
+Vue.component('downloadExcel', JsonExcel)
+```
+
+In your template
+```html
+<download-excel
+    :data   = "json_data">
+    Download Data
+    <img src="download_icon.png">
+</download-excel>
+```
+
+##Props List
+| Name             | Type  | Description |
+| :---             | :---: | ---         |
+| data  | Array  | (_required_) Data to be exported | 
+| fields  | Object  | fields inside the Json Object that you want to export. If no given, all the properties in the Json  are exported | 
+| export-fields    | Object | this prop is used to fix the problem with other components that use the variable fields, like vee-validate. exportFields works exactly like fields  |
+| type    | string | mime type [xls, csv], default: xls |
+| name    | string | filename to export, deault: data.xls |
+| title    | string/Array | Title(s) for the data, could be a string or an array of strings (multiple titles) |
+| footer    | string/Array | Footer(s) for the data, could be a string or an array of strings (multiple footers) |
+
+
+##Example
 ```js
 import Vue from 'vue'
 import JsonExcel from 'vue-json-excel'

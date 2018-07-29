@@ -35,11 +35,11 @@ export default {
 			type: Object,
 			required: false
 		},
-		// Title for the data, could be a string or a string array
+		// Title(s) for the data, could be a string or an array of strings (multiple titles)
 		'title':{
 			default: null
 		},
-		// footer for the data, could be a string or a string array
+		// Footer(s) for the data, could be a string or an array of strings (multiple footers)
 		'footer':{
 			default: null
 		},
