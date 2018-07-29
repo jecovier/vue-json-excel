@@ -1,0 +1,102 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'publish' ]
+2 info using npm@3.5.2
+3 info using node@v8.10.0
+4 verbose publish [ '.' ]
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec Result {
+7 silly cache add   raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: '/media/jecovier/01D299E0DAE46190/proyectos/vue-json-excel-module/vue-json-excel',
+7 silly cache add   type: 'directory' }
+8 verbose addLocalDirectory /home/jecovier/.npm/vue-json-excel/0.2.5/package.tgz not in flight; packing
+9 info lifecycle vue-json-excel@0.2.5~prepublish: vue-json-excel@0.2.5
+10 silly lifecycle vue-json-excel@0.2.5~prepublish: no script for prepublish, continuing
+11 verbose tar pack [ '/home/jecovier/.npm/vue-json-excel/0.2.5/package.tgz',
+11 verbose tar pack   '/media/jecovier/01D299E0DAE46190/proyectos/vue-json-excel-module/vue-json-excel' ]
+12 verbose tarball /home/jecovier/.npm/vue-json-excel/0.2.5/package.tgz
+13 verbose folder /media/jecovier/01D299E0DAE46190/proyectos/vue-json-excel-module/vue-json-excel
+14 verbose addLocalTarball adding from inside cache /home/jecovier/.npm/vue-json-excel/0.2.5/package.tgz
+15 silly cache afterAdd vue-json-excel@0.2.5
+16 verbose afterAdd /home/jecovier/.npm/vue-json-excel/0.2.5/package/package.json not in flight; writing
+17 verbose afterAdd /home/jecovier/.npm/vue-json-excel/0.2.5/package/package.json written
+18 silly publish { name: 'vue-json-excel',
+18 silly publish   version: '0.2.5',
+18 silly publish   description: 'Download your JSON data as an excel file directly from the browser',
+18 silly publish   main: 'JsonExcel.vue',
+18 silly publish   scripts: { test: 'echo "Error: no test specified" && exit 1' },
+18 silly publish   repository:
+18 silly publish    { type: 'git',
+18 silly publish      url: 'git+https://github.com/jecovier/vue-json-excel.git' },
+18 silly publish   keywords:
+18 silly publish    [ 'vue',
+18 silly publish      'vuejs',
+18 silly publish      'vue2',
+18 silly publish      'Excel',
+18 silly publish      'json',
+18 silly publish      'export',
+18 silly publish      'json excel',
+18 silly publish      'download',
+18 silly publish      'component' ],
+18 silly publish   author: { name: 'Jose Javier Espinoza' },
+18 silly publish   license: 'MIT',
+18 silly publish   bugs: { url: 'https://github.com/jecovier/vue-json-excel/issues' },
+18 silly publish   homepage: 'https://github.com/jecovier/vue-json-excel#readme',
+18 silly publish   dependencies: { downloadjs: '^1.4.7' },
+18 silly publish   readme: '# JSON to Excel for VUE 2\nDownload your JSON data as an excel file directly from the browser. This component it\'s based on the solution proposed on this thread https://stackoverflow.com/questions/17142427/javascript-to-export-html-table-to-excel\n\n# FIX\n[20-30-2018] Thanks to @gucastiliao and @gusehr for json callback feature, now you can preproccess the data using a callback function. See the description on how to use it.\n\n[02-01-2018] Thanks to @gucastiliao for json nested support, @ryatziv for the multiples fixes, @DrLongGhost for CSV data escaping, @davodaslanifakor for key header fix\n\n[11-18-2017] Thanks to @msonowal now you can export to CSV, just add the prop: type="csv"\n\n[03-08-2017] downloaded file works with Microsoft Office\n\n\n## ✔ Getting started\n\nGet the package:\n```bash\nnpm install vue-json-excel\n```\n\nRegister JsonExcel in your app entrypoint:\n```js\nimport Vue from \'vue\'\nimport JsonExcel from \'vue-json-excel\'\n\nVue.component(\'downloadExcel\', JsonExcel)\n\nconst app = new Vue({\n    el: \'#app\',\n    data: {\n        json_fields: {\n            \'Complete name\': \'name\',\n            \'City\': \'city\',\n            \'Telephone\': \'phone.mobile\',\n            \'Telephone 2\' : {\n                field: \'phone.landline\',\n                callback: (value) => {\n                    return `Landline Phone - ${value}`;\n                }\n            },\n        },\n        json_data: [\n            {\n                \'name\': \'Tony Peña\',\n                \'city\': \'New York\',\n                \'country\': \'United States\',\n                \'birthdate\': \'1978-03-15\',\n                \'phone\': {\n                    \'mobile\': \'1-541-754-3010\',\n                    \'landline\': \'(541) 754-3010\'\n                }\n            },\n            {\n                \'name\': \'Thessaloniki\',\n                \'city\': \'Athens\',\n                \'country\': \'Greece\',\n                \'birthdate\': \'1987-11-23\',\n                \'phone\': {\n                    \'mobile\': \'+1 855 275 5071\',\n                    \'landline\': \'(2741) 2621-244\'\n                }\n            }\n        ],\n        json_meta: [\n            [\n                {\n                    \'key\': \'charset\',\n                    \'value\': \'utf-8\'\n                }\n            ]\n        ],\n    }\n})\n```\n\nIn your HTML call it like\n\n```html\n<download-excel\n\tclass   = "btn btn-default"\n\t:data   = "json_data"\n\t:fields = "json_fields"\n\tname    = "filename.xls">\n\n\tDownload Excel (you can customize this with html code!)\n\n</download-excel>\n```\nREQUIRED\n- json_data: Contains the data you want to export,\n- json_fields: You can select what fields to export, especify nested data and assign labels to the fields\nthe key is the label, the value is the JSON field. This will export the field data \'as is\'.\n    If you need to customize the the exported data you can define a callback function. Thanks to @gucastiliao.\n```js\nlet json_fields = {\n    // regular field (exported data \'as is\')\n    fieldLabel: attributeName, // nested attribute supported\n    // callback function for data formatting\n    anotherFieldLabel: {\n        field: anotherAttributeName, // nested attribute supported\n        callback: (value) => {\n            return `formatted value ${value}`\n        }\n    },\n}\n```\nOPTIONAL\n- type: xls o csv, xls is the default value.\n- name: filename of the document you donwload.\n- title: Add a title above the datagrid, you can also pass a array with differents titles like:\n```js\n  title = ["user: 000001","USER REPORT", "Title 3"]\n```\n\n## Export CSV\nTo export JSON to CSV file just add the prop type with value "csv":\n\n```html\n<download-excel\n\tclass   = "btn btn-default"\n\t:data   = "json_data"\n\t:fields = "json_fields"\n\ttype    = "csv"\n\tname    = "filename.xls">\n\n\tDownload Excel (you can customize this with html code!)\n\n</download-excel>\n```\n\n\n## License\nMIT\n\n\n\n#### Status\nThis project is in an early stage of development. Any contribution is welcome :D\n',
+18 silly publish   readmeFilename: 'README.md',
+18 silly publish   gitHead: 'd799c5aa1bab3bb9523de01c2989018c74d3fb4e',
+18 silly publish   _id: 'vue-json-excel@0.2.5',
+18 silly publish   _shasum: 'd90b7149f1f612aa69b6d6d174f30df0b27c776e',
+18 silly publish   _from: '.' }
+19 verbose getPublishConfig undefined
+20 silly mapToRegistry name vue-json-excel
+21 silly mapToRegistry using default registry
+22 silly mapToRegistry registry https://registry.npmjs.org/
+23 silly mapToRegistry uri https://registry.npmjs.org/vue-json-excel
+24 verbose publish registryBase https://registry.npmjs.org/
+25 silly publish uploading /home/jecovier/.npm/vue-json-excel/0.2.5/package.tgz
+26 verbose request uri https://registry.npmjs.org/vue-json-excel
+27 verbose request sending authorization for write operation
+28 info attempt registry request try #1 at 11:42:44 AM
+29 verbose request using bearer token for auth
+30 verbose request id 3a0ac199dd86bee3
+31 http request PUT https://registry.npmjs.org/vue-json-excel
+32 http 401 https://registry.npmjs.org/vue-json-excel
+33 verbose headers { date: 'Sun, 29 Jul 2018 16:42:44 GMT',
+33 verbose headers   'content-type': 'application/json',
+33 verbose headers   'content-length': '54',
+33 verbose headers   connection: 'keep-alive',
+33 verbose headers   'set-cookie':
+33 verbose headers    [ '__cfduid=d15fcacf2afc028a6e2512e841d91dadf1532882564; expires=Mon, 29-Jul-19 16:42:44 GMT; path=/; domain=.registry.npmjs.org; HttpOnly' ],
+33 verbose headers   'cf-ray': '44210a5bc964b919-MIA',
+33 verbose headers   'expect-ct': 'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+33 verbose headers   server: 'cloudflare' }
+34 verbose request invalidating /home/jecovier/.npm/registry.npmjs.org/vue-json-excel on PUT
+35 error publish Failed PUT 401
+36 verbose stack Error: You must be logged in to publish packages. : vue-json-excel
+36 verbose stack     at makeError (/usr/share/npm/node_modules/npm-registry-client/lib/request.js:264:12)
+36 verbose stack     at CachingRegistryClient.<anonymous> (/usr/share/npm/node_modules/npm-registry-client/lib/request.js:252:14)
+36 verbose stack     at Request._callback (/usr/share/npm/node_modules/npm-registry-client/lib/request.js:172:14)
+36 verbose stack     at Request.self.callback (/usr/share/npm/node_modules/request/request.js:198:22)
+36 verbose stack     at emitTwo (events.js:126:13)
+36 verbose stack     at Request.emit (events.js:214:7)
+36 verbose stack     at Request.<anonymous> (/usr/share/npm/node_modules/request/request.js:1082:10)
+36 verbose stack     at emitOne (events.js:121:20)
+36 verbose stack     at Request.emit (events.js:211:7)
+36 verbose stack     at IncomingMessage.<anonymous> (/usr/share/npm/node_modules/request/request.js:1009:12)
+37 verbose statusCode 401
+38 verbose pkgid vue-json-excel
+39 verbose cwd /media/jecovier/01D299E0DAE46190/proyectos/vue-json-excel-module/vue-json-excel
+40 error Linux 4.15.0-29-generic
+41 error argv "/usr/bin/node" "/usr/bin/npm" "publish"
+42 error node v8.10.0
+43 error npm  v3.5.2
+44 error code E401
+45 error You must be logged in to publish packages. : vue-json-excel
+46 error If you need help, you may report this error at:
+46 error     <https://github.com/npm/npm/issues>
+47 verbose exit [ 1, true ]
