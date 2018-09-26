@@ -130,17 +130,18 @@ export default {
 		Transform json data into an CSV file.
 		*/
 		jsonToCSV (data) {
-			var csvData = ''
+			var csvData = [];
 			//Header
 			if( this.title != null ){
-				csvData += this.parseExtraData(this.title, '${data}\r\n')
+				csvData.push(this.parseExtraData(this.title, '${data}\r\n'));
 			}
 			//Fields
 			for (let key in data[0]) {
-				csvData +=  key + ','
+				csvData.push(key);
+				csvData.push(',');
 			}
-			csvData = csvData.slice(0, csvData.length - 1)
-			csvData += '\r\n'
+			csvData.pop();
+			csvData.push('\r\n');
 			//Data
 			data.map(function (item) {
 				for (let key in item) {
@@ -148,14 +149,15 @@ export default {
 					if (escapedCSV.match(/[,"\n]/)) {
 						escapedCSV = '"' + escapedCSV.replace(/\"/g, "\"\"") + '"'
 					}
-					csvData += escapedCSV + ','
+					csvData.push(escapedCSV);
+					csvData.pop(',');
 				}
-				csvData = csvData.slice(0, csvData.length - 1)
-				csvData += '\r\n'
+				csvData.pop();
+				csvData.push('\r\n');
 			})
 			//Footer
 			if( this.footer != null ){
-				csvData += this.parseExtraData(this.footer, '${data}\r\n')
+				csvData.push(this.parseExtraData(this.footer, '${data}\r\n'));
 			}
 			return csvData
 		},
