@@ -245,9 +245,6 @@ export default {
       if (typeof field === "object" && typeof field.callback === "function") {
         return field.callback(itemValue);
       }
-
-      if (itemValue === undefined) return this.defaultValue;
-
       return itemValue;
     },
     getNestedData: function(key, item) {
@@ -257,7 +254,7 @@ export default {
       let keyNestedSplit = field.split(".");
 
       valueFromNestedKey =
-        item[keyNestedSplit[0]] !== undefined
+        item[keyNestedSplit[0]] || item[keyNestedSplit[0]] === 0 
           ? item[keyNestedSplit[0]]
           : this.defaultValue;
 
