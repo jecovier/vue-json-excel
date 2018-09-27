@@ -21,7 +21,8 @@ export default {
     // Json to download
     data: {
       type: Array,
-      required: true
+      required: false,
+      default: null
     },
     // fields inside the Json Object that you want to export
     // if no given, all the properties in the Json are exported
@@ -54,6 +55,9 @@ export default {
       type: String,
       default: "data.xls"
     },
+    fetch: {
+      type: Function,
+    },
     meta: {
       type: Array,
       default: () => []
@@ -61,23 +65,28 @@ export default {
   },
   computed: {
     // unique identifier
-    idName: function() {
+    idName() {
       var now = new Date().getTime();
       return "export_" + now;
     },
 
-    downloadFields: function() {
+    downloadFields() {
       if (this.fields !== undefined) return this.fields;
 
       if (this.exportFields !== undefined) return this.exportFields;
     }
   },
   methods: {
-    generate() {
-      if (!this.data.length) {
+    async generate() {
+      let data = this.data;
+      if(this.fetch && !this.data)
+         data = await this.fetch();
+
+      if (!data || !data.length) {
         return;
       }
-      let json = this.getProcessedJson(this.data, this.downloadFields);
+
+      let json = this.getProcessedJson(data, this.downloadFields);
       if (this.type === "html") {
         // this is mainly for testing
         return this.export(
@@ -199,7 +208,7 @@ export default {
 		---------------
 		Get only the data to export, if no fields are set return all the data
 		*/
-    getProcessedJson: function(data, header) {
+    getProcessedJson(data, header) {
       let keys = this.getKeys(data, header);
       let newData = [];
       let _self = this;
@@ -207,14 +216,14 @@ export default {
         let newItem = {};
         for (let label in keys) {
           let property = keys[label];
-          newItem[label] = _self.getNestedData(property, item);
+          newItem[label] = _self.getValue(property, item);
         }
         newData.push(newItem);
       });
 
       return newData;
     },
-    getKeys: function(data, header) {
+    getKeys(data, header) {
       if (header) {
         return header;
       }
@@ -241,29 +250,38 @@ export default {
       }
       return parseData;
     },
-    callItemCallback: function(field, itemValue) {
-      if (typeof field === "object" && typeof field.callback === "function") {
-        return field.callback(itemValue);
-      }
-      return itemValue;
-    },
-    getNestedData: function(key, item) {
+    getValue(key, item) {
       const field = typeof key === "object" ? key.field : key;
+      let indexes = field.split(".");
+    
+      if( indexes.length > 1 )
+        return this.getValueFromNestedItem(item, indexes);
+      
+      if( key.hasOwnProperty('callback'))
+        return this.getValueFromCallback(item, key.callback)
+      
+      return this.parseValue(item[field]);
+    },
 
-      let valueFromNestedKey = null;
-      let keyNestedSplit = field.split(".");
-
-      valueFromNestedKey =
-        item[keyNestedSplit[0]] || item[keyNestedSplit[0]] === 0 
-          ? item[keyNestedSplit[0]]
-          : this.defaultValue;
-
-      for (let j = 1; j < keyNestedSplit.length; j++) {
-        valueFromNestedKey = valueFromNestedKey[keyNestedSplit[j]];
+    getValueFromNestedItem(item, indexes){
+      let nestedItem = item;
+      for (let index of indexes) {
+        if(nestedItem)
+          nestedItem = nestedItem[index];
       }
-      valueFromNestedKey = this.callItemCallback(key, valueFromNestedKey);
+      return this.parseValue(nestedItem);
+    },
 
-      return valueFromNestedKey;
+    async getValueFromCallback(item, callback){
+      if(typeof callback !== "function")
+        return this.defaultValue
+      const value = await callback(item);
+      return this.parseValue(value);
+    },
+    parseValue(value){
+      return value || value === 0 
+          ? value
+          : this.defaultValue;
     },
     base64ToBlob(data, mime) {
       let base64 = window.btoa(window.unescape(encodeURIComponent(data)));
