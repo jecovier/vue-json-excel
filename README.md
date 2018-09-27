@@ -42,7 +42,7 @@ In your template
 | name    | string | filename to export, deault: data.xls |
 | title    | string/Array | Title(s) for the data, could be a string or an array of strings (multiple titles) |
 | footer    | string/Array | Footer(s) for the data, could be a string or an array of strings (multiple footers) |
-| defaultValue    | string | Use as fallback when the row has no field values, default: '' |
+| default-value (defaultValue)  | string | Use as fallback when the row has no field values, default: '' |
 
 
 ## Example
