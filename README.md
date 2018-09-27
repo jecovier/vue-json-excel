@@ -35,7 +35,7 @@ In your template
 
 | Name             | Type  | Description |
 | :---             | :---: | ---         |
-| data  | Array  | (_required_) Data to be exported | 
+| data  | Array  | Data to be exported | 
 | fields  | Object  | fields inside the Json Object that you want to export. If no given, all the properties in the Json  are exported | 
 | export-fields (exportFields)    | Object | this prop is used to fix the problem with other components that use the variable fields, like vee-validate. exportFields works exactly like fields  |
 | type    | string | mime type [xls, csv], default: xls |
