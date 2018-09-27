@@ -74,8 +74,11 @@ export default {
 				return
 			}
 			let json = this.getProcessedJson(this.data, this.downloadFields)
-			if(this.type == 'csv'){
-				return this.export(this.jsonToCSV(json), this.name, "application/csv");
+			if (this.type === 'html') {
+				// this is mainly for testing
+				return this.export(this.jsonToXLS(json), this.name.replace(".xls", ".html"), "text/html");
+			} else if (this.type === 'csv') {
+				return this.export(this.jsonToCSV(json), this.name.replace(".xls", ".csv"), "application/csv");
 			}
 			return this.export(this.jsonToXLS(json), this.name, "application/vnd.ms-excel");
 		},
@@ -95,14 +98,15 @@ export default {
 		*/
 		jsonToXLS (data) {
 			let xlsTemp = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta name=ProgId content=Excel.Sheet> <meta name=Generator content="Microsoft Excel 11"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>${table}</table></body></html>'
-			let xlsData = '<thead><tr>'
+			let xlsData = '<thead>'
 			const colspan = Object.keys(data[0]).length
 
 			//Header
 			if( this.title != null ){
-				xlsData += this.parseExtraData(this.title, '<th colspan="'+colspan+'">${data}<th></tr><tr>')
+				xlsData += this.parseExtraData(this.title, '<tr><th colspan="'+colspan+'">${data}</th></tr>')
 			}
 			//Fields
+			xlsData += '<tr>'
 			for (let key in data[0]) {
 				xlsData += '<th>' + key + '</th>'
 			}
@@ -110,17 +114,18 @@ export default {
 			xlsData += '<tbody>'
 			//Data
 			data.map(function (item, index) {
-				xlsData += '<tbody><tr>'
+				xlsData += '<tr>'
 				for (let key in item) {
 					xlsData += '<td>' + item[key] + '</td>'
 				}
-				xlsData += '</tr></tbody>'
+				xlsData += '</tr>'
 			})
+			xlsData += '</tbody>'
 			//Footer
 			if( this.footer != null ){
-				xlsData += '<tfooter><tr>'
-				xlsData += this.parseExtraData(this.footer, '<td colspan="'+colspan+'">${data}<td></tr><tr>')
-				xlsData += '</tr></tfooter>'
+				xlsData += '<tfoot>'
+				xlsData += this.parseExtraData(this.footer, '<tr><td colspan="'+colspan+'">${data}</td></tr>')
+				xlsData += '</tfoot>'
 			}
 			return xlsTemp.replace('${table}', xlsData)
 		},
