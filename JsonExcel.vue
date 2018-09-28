@@ -55,6 +55,8 @@ export default {
       type: String,
       default: "data.xls"
     },
+    // Callback to fetch data before download, if it's set it runs immediately after mouse 
+    // pressed and before download process. IMPORTANT: only works if no data prop is defined
     fetch: {
       type: Function,
     },
