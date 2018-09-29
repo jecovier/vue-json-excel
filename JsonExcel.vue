@@ -1,11 +1,11 @@
 <template>
-	<button
+	<div
 		:id="idName"
 		@click="generate">
 		<slot>
 			Download {{name}}
 		</slot>
-	</button>
+	</div>
 </template>
 
 <script>
