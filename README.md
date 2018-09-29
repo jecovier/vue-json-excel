@@ -196,22 +196,6 @@ export default {
   }
 };
 </script>
-<style>
-  .btn{
-    padding: 0.5rem 1rem;
-    border: 1px solid #14F;
-    border-radius: 1rem;
-    background: #f0f0f9;
-  }
-  .btn:hover{
-    background: #D0D0D9;
-  }
-  hr{
-    border: 0;
-    border-bottom: 1px solid #ccc;
-    margin: 1rem 0;
-  }
-</style>
 
 ```
 
