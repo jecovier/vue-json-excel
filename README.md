@@ -35,13 +35,15 @@ In your template
 
 | Name             | Type  | Description |
 | :---             | :---: | ---         |
-| data  | Array  | (_required_) Data to be exported | 
+| data  | Array  | Data to be exported | 
 | fields  | Object  | fields inside the Json Object that you want to export. If no given, all the properties in the Json  are exported | 
 | export-fields (exportFields)    | Object | this prop is used to fix the problem with other components that use the variable fields, like vee-validate. exportFields works exactly like fields  |
 | type    | string | mime type [xls, csv], default: xls |
 | name    | string | filename to export, deault: data.xls |
 | title    | string/Array | Title(s) for the data, could be a string or an array of strings (multiple titles) |
 | footer    | string/Array | Footer(s) for the data, could be a string or an array of strings (multiple footers) |
+| default-value (defaultValue)  | string | Use as fallback when the row has no field values, default: '' |
+| fetch  | Fucntion | Callback to fetch data before download, if it's set it runs immediately after mouse pressed and before download process. IMPORTANT: only works if no data prop is defined |
 
 
 ## Example
