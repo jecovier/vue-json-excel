@@ -1,11 +1,11 @@
 <template>
-	<div
+	<button
 		:id="idName"
 		@click="generate">
 		<slot>
 			Download {{name}}
 		</slot>
-	</div>
+	</button>
 </template>
 
 <script>
@@ -55,8 +55,6 @@ export default {
       type: String,
       default: "data.xls"
     },
-    // Callback to fetch data before download, if it's set it runs immediately after mouse 
-    // pressed and before download process. IMPORTANT: only works if no data prop is defined
     fetch: {
       type: Function,
     },
@@ -81,7 +79,7 @@ export default {
   methods: {
     async generate() {
       let data = this.data;
-      if(this.fetch && !this.data)
+      if(typeof this.fetch === 'function' || !data)
          data = await this.fetch();
 
       if (!data || !data.length) {
@@ -106,7 +104,7 @@ export default {
       return this.export(
         this.jsonToXLS(json),
         this.name,
-        "application/vnd.ms-excel"
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       );
     },
     /*
@@ -255,14 +253,17 @@ export default {
     getValue(key, item) {
       const field = typeof key === "object" ? key.field : key;
       let indexes = field.split(".");
+      let value = this.defaultValue;
     
       if( indexes.length > 1 )
-        return this.getValueFromNestedItem(item, indexes);
+        value = this.getValueFromNestedItem(item, indexes);
+      else
+        value = item[field];
       
       if( key.hasOwnProperty('callback'))
-        return this.getValueFromCallback(item, key.callback)
+        value = this.getValueFromCallback(value, key.callback);
       
-      return this.parseValue(item[field]);
+      return value;
     },
 
     getValueFromNestedItem(item, indexes){
@@ -274,10 +275,10 @@ export default {
       return this.parseValue(nestedItem);
     },
 
-    async getValueFromCallback(item, callback){
+    getValueFromCallback(item, callback){
       if(typeof callback !== "function")
         return this.defaultValue
-      const value = await callback(item);
+      const value = callback(item);
       return this.parseValue(value);
     },
     parseValue(value){
