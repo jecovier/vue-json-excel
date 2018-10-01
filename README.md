@@ -152,7 +152,7 @@ To export JSON to CSV file just add the prop type with value "csv":
 
 
 ## Fetch Data on Demand
-In case you need fetch data from the server instead of holding in memory, you could use the fetch prop that allows you to define a callback function that is executed when your user click the download button. This function has to return a value to the export function. A basic use case is:
+In case you need to fetch data from the server, you could use the fetch prop that allows you to define a callback function that is executed when your user click the download button. This function has to return a json value containing the data to export. A basic use case is:
 
 ```js
 <template>
@@ -201,7 +201,7 @@ export default {
 
 ## Using callbacks
 
-when using callbacks function in the fields description, you have three option to retrieve data by define the field parameter:
+when using callbacks function in the fields description, you have three option to retrieve data:
 
 - **field: 'path.to.nested.property'** you can retrieve an especific value using the nested property notation.
 ```js
