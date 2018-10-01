@@ -104,7 +104,7 @@ export default {
       return this.export(
         this.jsonToXLS(json),
         this.name,
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        "vnd.ms-excel"
       );
     },
     /*
