@@ -261,7 +261,7 @@ export default {
       else if( indexes.length > 1 )
         value = this.getValueFromNestedItem(item, indexes);
       else
-        value = item[field];
+        value = this.parseValue(item[field]);
       
       if( key.hasOwnProperty('callback'))
         value = this.getValueFromCallback(value, key.callback);
