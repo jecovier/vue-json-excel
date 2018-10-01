@@ -151,6 +151,105 @@ To export JSON to CSV file just add the prop type with value "csv":
 ```
 
 
+## Fetch Data on Demand
+In case you need fetch data from the server instead of holding in memory, you could use the fetch prop that allows you to define a callback function that is executed when your user click the download button. This function has to return a value to the export function. A basic use case is:
+
+```js
+<template>
+  <div id="app">
+    
+    <hr>
+    <h2>Fetch Example</h2>
+    <downloadexcel
+      class = "btn"
+      :fetch   = "fetchData"
+      :fields = "json_fields"
+      type    = "csv">
+      Download Excel
+    </downloadexcel>
+  </div>
+</template>
+
+<script>
+import downloadexcel from "vue-json-excel";
+import axios from 'axios';
+
+export default {
+  name: "App",
+  components: {
+    downloadexcel,
+  },
+  data(){
+    return {
+      json_fields: {
+        'Complete name': 'name',
+        'Date': 'date',
+      },
+    }
+  }, //data
+  methods:{
+    async fetchData(){
+      const response = await axios.get('https://holidayapi.com/v1/holidays?key=a4b2083b-1577-4acd-9408-6e529996b129&country=US&year=2017&month=09');
+      console.log(response);
+      return response.data.holidays;
+    },
+  }
+};
+</script>
+
+```
+
+## Using callbacks
+
+when using callbacks function in the fields description, you have three option to retrieve data by define the field parameter:
+
+- **field: 'path.to.nested.property'** you can retrieve an especific value using the nested property notation.
+```js
+    json_fields: {
+        'Complete name': 'name',
+        'City': 'city',
+        'Telephone': 'phone.mobile',
+        'Telephone 2' : {
+            field: 'phone.landline',
+            callback: (value) => {
+                return `Landline Phone - ${value}`;
+            }
+        },
+    },
+```
+- **field: 'define.nested.object'** you can retrieve an nested object too
+```js
+    json_fields: {
+        'Complete name': 'name',
+        'City': 'city',
+        'Telephone': 'phone.mobile',
+        'Telephone 2' : {
+            field: 'phone',
+            callback: (value) => {
+                return `Landline Phone - ${value.landline}`;
+            }
+        },
+    },
+```
+- Or **get the whole row** if field it's undefined.
+```js
+    json_fields: {
+        'Complete name': 'name',
+        'City': 'city',
+        'Telephone': 'phone.mobile',
+        'Telephone 2' : {
+            callback: (value) => {
+                return `Landline Phone - ${value.phone.landline}`;
+            }
+        },
+    },
+```
+
+
+
+
+
+
 ## License
 MIT
 
