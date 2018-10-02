@@ -104,7 +104,7 @@ export default {
       return this.export(
         this.jsonToXLS(json),
         this.name,
-        "vnd.ms-excel"
+        "application/vnd.ms-excel"
       );
     },
     /*
