@@ -35,13 +35,15 @@ In your template
 
 | Name             | Type  | Description |
 | :---             | :---: | ---         |
-| data  | Array  | (_required_) Data to be exported | 
+| data  | Array  | Data to be exported | 
 | fields  | Object  | fields inside the Json Object that you want to export. If no given, all the properties in the Json  are exported | 
 | export-fields (exportFields)    | Object | this prop is used to fix the problem with other components that use the variable fields, like vee-validate. exportFields works exactly like fields  |
 | type    | string | mime type [xls, csv], default: xls |
 | name    | string | filename to export, deault: data.xls |
 | title    | string/Array | Title(s) for the data, could be a string or an array of strings (multiple titles) |
 | footer    | string/Array | Footer(s) for the data, could be a string or an array of strings (multiple footers) |
+| default-value (defaultValue)  | string | Use as fallback when the row has no field values, default: '' |
+| fetch  | Fucntion | Callback to fetch data before download, if it's set it runs immediately after mouse pressed and before download process. IMPORTANT: only works if no data prop is defined |
 
 
 ## Example
@@ -147,6 +149,105 @@ To export JSON to CSV file just add the prop type with value "csv":
 
 </download-excel>
 ```
+
+
+## Fetch Data on Demand
+In case you need to fetch data from the server, you could use the fetch prop that allows you to define a callback function that is executed when your user click the download button. This function has to return a json value containing the data to export. A basic use case is:
+
+```js
+<template>
+  <div id="app">
+    
+    <hr>
+    <h2>Fetch Example</h2>
+    <downloadexcel
+      class = "btn"
+      :fetch   = "fetchData"
+      :fields = "json_fields"
+      type    = "csv">
+      Download Excel
+    </downloadexcel>
+  </div>
+</template>
+
+<script>
+import downloadexcel from "vue-json-excel";
+import axios from 'axios';
+
+export default {
+  name: "App",
+  components: {
+    downloadexcel,
+  },
+  data(){
+    return {
+      json_fields: {
+        'Complete name': 'name',
+        'Date': 'date',
+      },
+    }
+  }, //data
+  methods:{
+    async fetchData(){
+      const response = await axios.get('https://holidayapi.com/v1/holidays?key=a4b2083b-1577-4acd-9408-6e529996b129&country=US&year=2017&month=09');
+      console.log(response);
+      return response.data.holidays;
+    },
+  }
+};
+</script>
+
+```
+
+## Using callbacks
+
+when using callbacks function in the fields description, you have three option to retrieve data:
+
+- **field: 'path.to.nested.property'** you can retrieve an especific value using the nested property notation.
+```js
+    json_fields: {
+        'Complete name': 'name',
+        'City': 'city',
+        'Telephone': 'phone.mobile',
+        'Telephone 2' : {
+            field: 'phone.landline',
+            callback: (value) => {
+                return `Landline Phone - ${value}`;
+            }
+        },
+    },
+```
+- **field: 'define.nested.object'** you can retrieve an nested object too
+```js
+    json_fields: {
+        'Complete name': 'name',
+        'City': 'city',
+        'Telephone': 'phone.mobile',
+        'Telephone 2' : {
+            field: 'phone',
+            callback: (value) => {
+                return `Landline Phone - ${value.landline}`;
+            }
+        },
+    },
+```
+- Or **get the whole row** if field it's undefined.
+```js
+    json_fields: {
+        'Complete name': 'name',
+        'City': 'city',
+        'Telephone': 'phone.mobile',
+        'Telephone 2' : {
+            callback: (value) => {
+                return `Landline Phone - ${value.phone.landline}`;
+            }
+        },
+    },
+```
+
+
+
+
 
 
 ## License
