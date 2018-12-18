@@ -285,7 +285,7 @@ export default {
       return this.parseValue(value);
     },
     parseValue(value){
-      return value || value === 0 
+      return value || value === 0 || typeof value === 'boolean'
           ? value
           : this.defaultValue;
     },
