@@ -185,6 +185,7 @@ export default {
 };
 </script>
 ```
+![Example of Excel showing multi-line cell](example-multi-line.png)
 
 ## Fetch Data on Demand
 In case you need to fetch data from the server, you could use the fetch prop that allows you to define a callback function that is executed when your user click the download button. This function has to return a json value containing the data to export. A basic use case is:
