@@ -43,7 +43,8 @@ In your template
 | title    | string/Array | Title(s) for the data, could be a string or an array of strings (multiple titles) |
 | footer    | string/Array | Footer(s) for the data, could be a string or an array of strings (multiple footers) |
 | default-value (defaultValue)  | string | Use as fallback when the row has no field values, default: '' |
-| fetch  | Fucntion | Callback to fetch data before download, if it's set it runs immediately after mouse pressed and before download process. IMPORTANT: only works if no data prop is defined |
+| fetch  | Function | Callback to fetch data before download, if it's set it runs immediately after mouse pressed and before download process. IMPORTANT: only works if no data prop is defined |
+| before-finish  | Function | Callback to call a method right before the download box pops out, eg:hide loading progress |
 
 
 ## Example
@@ -164,6 +165,7 @@ In case you need to fetch data from the server, you could use the fetch prop tha
       class = "btn"
       :fetch   = "fetchData"
       :fields = "json_fields"
+      :before-finish = "finishDownload"
       type    = "csv">
       Download Excel
     </downloadexcel>
@@ -193,6 +195,9 @@ export default {
       console.log(response);
       return response.data.holidays;
     },
+    finishDownload(){
+        alert('finish');
+    }
   }
 };
 </script>

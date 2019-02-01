@@ -61,7 +61,11 @@ export default {
     meta: {
       type: Array,
       default: () => []
-    }
+    },
+    //event before download pops up
+    beforeFinish:{
+      type: Function,
+    },
   },
   computed: {
     // unique identifier
@@ -112,6 +116,8 @@ export default {
 		*/
     export(data, filename, mime) {
       let blob = this.base64ToBlob(data, mime);
+      if(typeof this.beforeFinish === 'function')
+        this.beforeFinish();
       download(blob, filename, mime);
     },
     /*
