@@ -61,7 +61,19 @@ export default {
     meta: {
       type: Array,
       default: () => []
-    }
+    }, 
+    worksheet: {
+      type: String, 
+      default: "Sheet1"
+    },
+    //event before generate was called
+    beforeGenerate:{
+      type: Function,
+    },
+    //event before download pops up
+    beforeFinish:{
+      type: Function,
+    },
   },
   computed: {
     // unique identifier
@@ -78,6 +90,9 @@ export default {
   },
   methods: {
     async generate() {
+      if(typeof this.beforeGenerate === 'function'){
+        await this.beforeGenerate();
+      }
       let data = this.data;
       if(typeof this.fetch === 'function' || !data)
          data = await this.fetch();
@@ -110,8 +125,10 @@ export default {
     /*
 		Use downloadjs to generate the download link
 		*/
-    export(data, filename, mime) {
+    export:async function(data, filename, mime) {
       let blob = this.base64ToBlob(data, mime);
+      if(typeof this.beforeFinish === 'function')
+        await this.beforeFinish();
       download(blob, filename, mime);
     },
     /*
@@ -123,9 +140,10 @@ export default {
 		*/
     jsonToXLS(data) {
       let xlsTemp =
-        '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta name=ProgId content=Excel.Sheet> <meta name=Generator content="Microsoft Excel 11"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>${table}</table></body></html>';
+        '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta name=ProgId content=Excel.Sheet> <meta name=Generator content="Microsoft Excel 11"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>${worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><style>br {mso-data-placement: same-cell;}</style></head><body><table>${table}</table></body></html>';
       let xlsData = "<thead>";
       const colspan = Object.keys(data[0]).length;
+      let _self = this;
 
       //Header
       if (this.title != null) {
@@ -148,7 +166,7 @@ export default {
       data.map(function(item, index) {
         xlsData += "<tr>";
         for (let key in item) {
-          xlsData += "<td>" + item[key] + "</td>";
+          xlsData += "<td>" + _self.valueReformattedForMultilines(item[key]) + "</td>";
         }
         xlsData += "</tr>";
       });
@@ -164,7 +182,7 @@ export default {
         xlsData += "</tfoot>";
       }
 
-      return xlsTemp.replace("${table}", xlsData);
+      return xlsTemp.replace("${table}", xlsData).replace("${worksheet}", this.worksheet);
     },
     /*
 		jsonToCSV
@@ -187,7 +205,7 @@ export default {
       //Data
       data.map(function(item) {
         for (let key in item) {
-          let escapedCSV = item[key] + ""; // cast Numbers to string
+          let escapedCSV = '=\"' + item[key] + '\"'; // cast Numbers to string
           if (escapedCSV.match(/[,"\n]/)) {
             escapedCSV = '"' + escapedCSV.replace(/\"/g, '""') + '"';
           }
@@ -269,6 +287,14 @@ export default {
       return value;
     },
 
+    /*
+    convert values with newline \n characters into <br/>
+    */
+    valueReformattedForMultilines(value) {
+      if (typeof(value)=="string") return(value.replace(/\n/ig,"<br/>"));
+      else return(value);
+    },
+
     getValueFromNestedItem(item, indexes){
       let nestedItem = item;
       for (let index of indexes) {
@@ -285,7 +311,7 @@ export default {
       return this.parseValue(value);
     },
     parseValue(value){
-      return value || value === 0 
+      return value || value === 0 || typeof value === 'boolean'
           ? value
           : this.defaultValue;
     },
