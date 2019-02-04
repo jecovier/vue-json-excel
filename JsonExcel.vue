@@ -62,6 +62,10 @@ export default {
       type: Array,
       default: () => []
     },
+    //event before generate was called
+    beforeGenerate:{
+      type: Function,
+    },
     //event before download pops up
     beforeFinish:{
       type: Function,
@@ -82,6 +86,9 @@ export default {
   },
   methods: {
     async generate() {
+      if(typeof this.beforeGenerate === 'function'){
+        await this.beforeGenerate();
+      }
       let data = this.data;
       if(typeof this.fetch === 'function' || !data)
          data = await this.fetch();
@@ -114,10 +121,10 @@ export default {
     /*
 		Use downloadjs to generate the download link
 		*/
-    export(data, filename, mime) {
+    export:async function(data, filename, mime) {
       let blob = this.base64ToBlob(data, mime);
       if(typeof this.beforeFinish === 'function')
-        this.beforeFinish();
+        await this.beforeFinish();
       download(blob, filename, mime);
     },
     /*
