@@ -44,7 +44,9 @@ In your template
 | footer    | string/Array | Footer(s) for the data, could be a string or an array of strings (multiple footers) |
 | default-value (defaultValue)  | string | Use as fallback when the row has no field values, default: '' |
 | worksheet | string | Name of the worksheet tab.  default: 'Sheet1' |
-| fetch  | Fucntion | Callback to fetch data before download, if it's set it runs immediately after mouse pressed and before download process. IMPORTANT: only works if no data prop is defined |
+| fetch  | Function | Callback to fetch data before download, if it's set it runs immediately after mouse pressed and before download process. IMPORTANT: only works if no data prop is defined |
+| before-generate  | Function | Callback to call a method right before the generate / fetch data, eg:show loading progress |
+| before-finish  | Function | Callback to call a method right before the download box pops out, eg:hide loading progress |
 
 
 ## Example
@@ -152,6 +154,42 @@ To export JSON to CSV file just add the prop type with value "csv":
 </download-excel>
 ```
 
+## Multi-line values will appear in a single cell in Excel
+A single text value in the data that contains newline characters will appear as a single cell in Excel. This avoids the undesired behavior of multi-line values getting split into multiple cells that must be merged before using data filters and pivot tables.
+
+For example:
+
+```html
+<template>
+    <div>
+        <json-excel :data="dataForExcel"></json-excel>
+    </div>
+</template>
+<script>
+import JsonExcel from "@/components/JsonExcel";
+
+export default {
+  components: {
+    JsonExcel
+  },
+  data: () => {
+    return {
+      dataForExcel: [
+        { colA: "Hello", colB: "World" },
+        {
+          colA: "Multi-line",
+          /* Multi-line value: */
+          colB:
+            "This is a long paragraph\nwith multiple lines\nthat should show in a single cell."
+        },
+        { colA: "Another", colB: "Regular cell" }
+      ]
+    };
+  }
+};
+</script>
+```
+![Example of Excel showing multi-line cell](example-multi-line.png)
 
 ## Fetch Data on Demand
 In case you need to fetch data from the server, you could use the fetch prop that allows you to define a callback function that is executed when your user click the download button. This function has to return a json value containing the data to export. A basic use case is:
@@ -166,6 +204,8 @@ In case you need to fetch data from the server, you could use the fetch prop tha
       class = "btn"
       :fetch   = "fetchData"
       :fields = "json_fields"
+      :before-generate = "startDownload"
+      :before-finish = "finishDownload"
       type    = "csv">
       Download Excel
     </downloadexcel>
@@ -195,6 +235,12 @@ export default {
       console.log(response);
       return response.data.holidays;
     },
+    startDownload(){
+        alert('show loading');
+    },
+    finishDownload(){
+        alert('hide loading');
+    }
   }
 };
 </script>
