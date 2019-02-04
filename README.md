@@ -44,6 +44,7 @@ In your template
 | footer    | string/Array | Footer(s) for the data, could be a string or an array of strings (multiple footers) |
 | default-value (defaultValue)  | string | Use as fallback when the row has no field values, default: '' |
 | fetch  | Function | Callback to fetch data before download, if it's set it runs immediately after mouse pressed and before download process. IMPORTANT: only works if no data prop is defined |
+| before-generate  | Function | Callback to call a method right before the generate / fetch data, eg:show loading progress |
 | before-finish  | Function | Callback to call a method right before the download box pops out, eg:hide loading progress |
 
 
