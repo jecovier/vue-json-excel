@@ -166,7 +166,7 @@ export default {
       data.map(function(item, index) {
         xlsData += "<tr>";
         for (let key in item) {
-          xlsData += "<td>" + _self.valueReformattedForMultilines(item[key]) + "</td>";
+          xlsData += "<td>" +'=\"'+ _self.valueReformattedForMultilines(item[key]) +'\"'+ "</td>";
         }
         xlsData += "</tr>";
       });
