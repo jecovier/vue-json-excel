@@ -166,7 +166,7 @@ export default {
       data.map(function(item, index) {
         xlsData += "<tr>";
         for (let key in item) {
-          xlsData += "<td>" + _self.valueReformattedForMultilines(item[key]) + "</td>";
+          xlsData += "<td>" +  _self.preprocessLongNum(_self.valueReformattedForMultilines(item[key])) + "</td>";
         }
         xlsData += "</tr>";
       });
@@ -294,7 +294,17 @@ export default {
       if (typeof(value)=="string") return(value.replace(/\n/ig,"<br/>"));
       else return(value);
     },
-
+    preprocessLongNum(value) {
+      if(String(value).startsWith('0x')){
+        return value
+      }
+      if (!isNaN(value) && value != "") {
+        if(value>99999999999||value<0.0000000000001){
+          return '=\"' + value + '\"';
+        }
+      }
+      return value
+    },
     getValueFromNestedItem(item, indexes){
       let nestedItem = item;
       for (let index of indexes) {
