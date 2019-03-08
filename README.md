@@ -47,6 +47,7 @@ In your template
 | fetch  | Function | Callback to fetch data before download, if it's set it runs immediately after mouse pressed and before download process. IMPORTANT: only works if no data prop is defined |
 | before-generate  | Function | Callback to call a method right before the generate / fetch data, eg:show loading progress |
 | before-finish  | Function | Callback to call a method right before the download box pops out, eg:hide loading progress |
+| stringifyLongNum | Boolean | stringify long number and decimal(solve the problem of loss of digital accuracy), default: false |
 
 
 ## Example
