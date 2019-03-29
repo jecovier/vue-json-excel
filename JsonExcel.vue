@@ -205,10 +205,10 @@ export default {
       //Data
       data.map(function(item) {
         for (let key in item) {
-          let escapedCSV = '=\"' + item[key] + '\"'; // cast Numbers to string
-          if (escapedCSV.match(/[,"\n]/)) {
-            escapedCSV = '"' + escapedCSV.replace(/\"/g, '""') + '"';
-          }
+          let escapedCSV = item[key];
+	    if (isNaN(item[key]) && escapedCSV.match(/[,"\n]/)) {
+	      escapedCSV = '"' + escapedCSV.replace(/\"/g, '""') + '"';
+	    }
           csvData.push(escapedCSV);
           csvData.push(",");
         }
