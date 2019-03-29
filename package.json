@@ -2,7 +2,7 @@
   "name": "vue-json-excel",
   "version": "0.2.98",
   "description": "Download your JSON as an excel or CSV file directly from the browser",
-  "main": "JsonExcel.vue",
+  "main": "dist/vue-json-excel.js",
   "scripts": {
     "build:dist": "rollup -c ./rollup.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"

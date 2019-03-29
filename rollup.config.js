@@ -6,7 +6,7 @@ export default {
     input: 'JsonExcel.vue',
     output: {
         format: 'esm',
-        file: 'dist/JsonExcel.js'
+        file: 'dist/vue-json-excel.js'
     },
     plugins: [
         vue(),
