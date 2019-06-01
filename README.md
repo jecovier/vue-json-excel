@@ -238,8 +238,9 @@ export default {
     startDownload(){
         alert('show loading');
     },
-    finishDownload(){
+    finishDownload(blob){
         alert('hide loading');
+        alert(`file size: ${blob.size}`);
     }
   }
 };
