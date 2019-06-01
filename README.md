@@ -46,7 +46,7 @@ In your template
 | worksheet | string | Name of the worksheet tab.  default: 'Sheet1' |
 | fetch  | Function | Callback to fetch data before download, if it's set it runs immediately after mouse pressed and before download process. IMPORTANT: only works if no data prop is defined |
 | before-generate  | Function | Callback to call a method right before the generate / fetch data, eg:show loading progress |
-| before-finish  | Function | Callback to call a method right before the download box pops out, eg:hide loading progress |
+| before-finish  | Function | Callback to call a method right before the download box pops out, eg:hide loading progress. Gets resulting binary blob as argument for examination or reuse. |
 
 
 ## Example
