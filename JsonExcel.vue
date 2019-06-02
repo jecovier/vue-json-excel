@@ -128,7 +128,7 @@ export default {
     export:async function(data, filename, mime) {
       let blob = this.base64ToBlob(data, mime);
       if(typeof this.beforeFinish === 'function')
-        await this.beforeFinish();
+        await this.beforeFinish(blob);
       download(blob, filename, mime);
     },
     /*
