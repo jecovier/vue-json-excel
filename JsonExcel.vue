@@ -316,14 +316,7 @@ export default {
           : this.defaultValue;
     },
     base64ToBlob(data, mime) {
-      let base64 = window.btoa(window.unescape(encodeURIComponent(data)));
-      let bstr = atob(base64);
-      let n = bstr.length;
-      let u8arr = new Uint8ClampedArray(n);
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-      }
-      return new Blob([u8arr], { type: mime });
+      return new Blob([data], { type: mime });
     }
   } // end methods
 };
