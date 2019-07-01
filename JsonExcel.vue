@@ -256,7 +256,8 @@ export default {
       let parseData = "";
       if (Array.isArray(extraData)) {
         for (var i = 0; i < extraData.length; i++) {
-          parseData += format.replace("${data}", extraData[i]);
+          if(extraData[i])
+            parseData += format.replace("${data}", extraData[i]);
         }
       } else {
         parseData += format.replace("${data}", extraData);
