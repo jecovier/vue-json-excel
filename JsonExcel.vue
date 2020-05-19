@@ -74,6 +74,11 @@ export default {
     beforeFinish:{
       type: Function,
     },
+    // Determine if CSV Data should be escaped
+    escapeCsv: {
+      type: Boolean,
+      default: true
+    }
   },
   computed: {
     // unique identifier
@@ -190,6 +195,7 @@ export default {
 		Transform json data into an CSV file.
 		*/
     jsonToCSV(data) {
+      let _self = this;
       var csvData = [];
       //Header
       if (this.title != null) {
@@ -205,9 +211,12 @@ export default {
       //Data
       data.map(function(item) {
         for (let key in item) {
-          let escapedCSV = '=\"' + item[key] + '\"'; // cast Numbers to string
-          if (escapedCSV.match(/[,"\n]/)) {
-            escapedCSV = '"' + escapedCSV.replace(/\"/g, '""') + '"';
+          let escapedCSV = item[key];
+          if (_self.escapeCsv) {
+            escapedCSV = '=\"' + escapedCSV + '\"'; // cast Numbers to string
+            if (escapedCSV.match(/[,"\n]/)) {
+              escapedCSV = '"' + escapedCSV.replace(/\"/g, '""') + '"';
+            }
           }
           csvData.push(escapedCSV);
           csvData.push(",");
