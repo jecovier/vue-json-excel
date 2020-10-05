@@ -1,11 +1,7 @@
 <template>
-	<div
-		:id="idName"
-		@click="generate">
-		<slot>
-			Download {{name}}
-		</slot>
-	</div>
+  <div :id="idName" @click="generate">
+    <slot> Download {{ name }} </slot>
+  </div>
 </template>
 
 <script>
@@ -16,74 +12,74 @@ export default {
     // mime type [xls, csv]
     type: {
       type: String,
-      default: "xls"
+      default: "xls",
     },
     // Json to download
     data: {
       type: Array,
       required: false,
-      default: null
+      default: null,
     },
     // fields inside the Json Object that you want to export
     // if no given, all the properties in the Json are exported
     fields: {
       type: Object,
-      required: false
+      default: () => null,
     },
     // this prop is used to fix the problem with other components that use the
     // variable fields, like vee-validate. exportFields works exactly like fields
     exportFields: {
       type: Object,
-      required: false
+      default: () => null,
     },
     // Use as fallback when the row has no field values
     defaultValue: {
       type: String,
       required: false,
-      default: ""
+      default: "",
     },
     // Title(s) for the data, could be a string or an array of strings (multiple titles)
-    title: {
-      default: null
+    header: {
+      default: null,
     },
     // Footer(s) for the data, could be a string or an array of strings (multiple footers)
     footer: {
-      default: null
+      default: null,
     },
     // filename to export
     name: {
       type: String,
-      default: "data.xls"
+      default: "data.xls",
     },
     fetch: {
       type: Function,
     },
     meta: {
       type: Array,
-      default: () => []
-    }, 
+      default: () => [],
+    },
     worksheet: {
-      type: String, 
-      default: "Sheet1"
+      type: String,
+      default: "Sheet1",
     },
     //event before generate was called
-    beforeGenerate:{
+    beforeGenerate: {
       type: Function,
     },
     //event before download pops up
-    beforeFinish:{
+    beforeFinish: {
       type: Function,
     },
     // Determine if CSV Data should be escaped
     escapeCsv: {
       type: Boolean,
-      default: true
+      default: true,
     },
     // long number stringify
-    stringifyLongNum:{
-      type:Boolean,
-      default:false
-    }
+    stringifyLongNum: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     // unique identifier
@@ -93,19 +89,18 @@ export default {
     },
 
     downloadFields() {
-      if (this.fields !== undefined) return this.fields;
+      if (this.fields) return this.fields;
 
-      if (this.exportFields !== undefined) return this.exportFields;
-    }
+      if (this.exportFields) return this.exportFields;
+    },
   },
   methods: {
     async generate() {
-      if(typeof this.beforeGenerate === 'function'){
+      if (typeof this.beforeGenerate === "function") {
         await this.beforeGenerate();
       }
       let data = this.data;
-      if(typeof this.fetch === 'function' || !data)
-         data = await this.fetch();
+      if (typeof this.fetch === "function" || !data) data = await this.fetch();
 
       if (!data || !data.length) {
         return;
@@ -135,10 +130,9 @@ export default {
     /*
 		Use downloadjs to generate the download link
 		*/
-    export:async function(data, filename, mime) {
+    export: async function (data, filename, mime) {
       let blob = this.base64ToBlob(data, mime);
-      if(typeof this.beforeFinish === 'function')
-        await this.beforeFinish();
+      if (typeof this.beforeFinish === "function") await this.beforeFinish();
       download(blob, filename, mime);
     },
     /*
@@ -156,9 +150,10 @@ export default {
       let _self = this;
 
       //Header
-      if (this.title != null) {
+      const header = this.header || this.$attrs.title;
+      if (header) {
         xlsData += this.parseExtraData(
-          this.title,
+          header,
           '<tr><th colspan="' + colspan + '">${data}</th></tr>'
         );
       }
@@ -173,10 +168,15 @@ export default {
 
       //Data
       xlsData += "<tbody>";
-      data.map(function(item, index) {
+      data.map(function (item, index) {
         xlsData += "<tr>";
         for (let key in item) {
-          xlsData += "<td>" + _self.preprocessLongNum(_self.valueReformattedForMultilines(item[key])) + "</td>";
+          xlsData +=
+            "<td>" +
+            _self.preprocessLongNum(
+              _self.valueReformattedForMultilines(item[key])
+            ) +
+            "</td>";
         }
         xlsData += "</tr>";
       });
@@ -192,7 +192,9 @@ export default {
         xlsData += "</tfoot>";
       }
 
-      return xlsTemp.replace("${table}", xlsData).replace("${worksheet}", this.worksheet);
+      return xlsTemp
+        .replace("${table}", xlsData)
+        .replace("${worksheet}", this.worksheet);
     },
     /*
 		jsonToCSV
@@ -203,10 +205,13 @@ export default {
       let _self = this;
       var csvData = [];
       var self = this;
+
       //Header
-      if (this.title != null) {
-        csvData.push(this.parseExtraData(this.title, "${data}\r\n"));
+      const header = this.header || this.$attrs.title;
+      if (header) {
+        csvData.push(this.parseExtraData(header, "${data}\r\n"));
       }
+
       //Fields
       for (let key in data[0]) {
         csvData.push(key);
@@ -215,11 +220,13 @@ export default {
       csvData.pop();
       csvData.push("\r\n");
       //Data
-      data.map(function(item) {
+      data.map(function (item) {
         for (let key in item) {
-          let escapedCSV = item[key] + '';
+          let escapedCSV = item[key] + "";
+          // Escaped CSV data to string to avoid problems with numbers or other types of values
+          // this is controlled by the prop escapeCsv
           if (_self.escapeCsv) {
-            escapedCSV = '=\"' + escapedCSV + '\"'; // cast Numbers to string
+            escapedCSV = '="' + escapedCSV + '"'; // cast Numbers to string
             if (escapedCSV.match(/[,"\n]/)) {
               escapedCSV = '"' + escapedCSV.replace(/\"/g, '""') + '"';
             }
@@ -245,7 +252,7 @@ export default {
       let keys = this.getKeys(data, header);
       let newData = [];
       let _self = this;
-      data.map(function(item, index) {
+      data.map(function (item, index) {
         let newItem = {};
         for (let label in keys) {
           let property = keys[label];
@@ -276,7 +283,7 @@ export default {
       let parseData = "";
       if (Array.isArray(extraData)) {
         for (var i = 0; i < extraData.length; i++) {
-          if(extraData[i])
+          if (extraData[i])
             parseData += format.replace("${data}", extraData[i]);
         }
       } else {
@@ -286,20 +293,18 @@ export default {
     },
 
     getValue(key, item) {
-      const field = typeof key   !== "object" ? key : key.field;
-      let indexes = typeof field !== "string" ? []  : field.split(".");
-      let value   = this.defaultValue;
-    
-      if (!field)
-	      value = item;
-      else if( indexes.length > 1 )
+      const field = typeof key !== "object" ? key : key.field;
+      let indexes = typeof field !== "string" ? [] : field.split(".");
+      let value = this.defaultValue;
+
+      if (!field) value = item;
+      else if (indexes.length > 1)
         value = this.getValueFromNestedItem(item, indexes);
-      else
-        value = this.parseValue(item[field]);
-      
-      if( key.hasOwnProperty('callback'))
+      else value = this.parseValue(item[field]);
+
+      if (key.hasOwnProperty("callback"))
         value = this.getValueFromCallback(value, key.callback);
-      
+
       return value;
     },
 
@@ -307,41 +312,39 @@ export default {
     convert values with newline \n characters into <br/>
     */
     valueReformattedForMultilines(value) {
-      if (typeof(value)=="string") return(value.replace(/\n/ig,"<br/>"));
-      else return(value);
+      if (typeof value == "string") return value.replace(/\n/gi, "<br/>");
+      else return value;
     },
     preprocessLongNum(value) {
-      if(this.stringifyLongNum){
-         if(String(value).startsWith('0x')){
-            return value
-         }
-         if (!isNaN(value) && value != "") {
-           if(value>99999999999||value<0.0000000000001){
-              return '=\"' + value + '\"';
-           }
-         }
-       }
-       return value
+      if (this.stringifyLongNum) {
+        if (String(value).startsWith("0x")) {
+          return value;
+        }
+        if (!isNaN(value) && value != "") {
+          if (value > 99999999999 || value < 0.0000000000001) {
+            return '="' + value + '"';
+          }
+        }
+      }
+      return value;
     },
-    getValueFromNestedItem(item, indexes){
+    getValueFromNestedItem(item, indexes) {
       let nestedItem = item;
       for (let index of indexes) {
-        if(nestedItem)
-          nestedItem = nestedItem[index];
+        if (nestedItem) nestedItem = nestedItem[index];
       }
       return this.parseValue(nestedItem);
     },
 
-    getValueFromCallback(item, callback){
-      if(typeof callback !== "function")
-        return this.defaultValue
+    getValueFromCallback(item, callback) {
+      if (typeof callback !== "function") return this.defaultValue;
       const value = callback(item);
       return this.parseValue(value);
     },
-    parseValue(value){
-      return value || value === 0 || typeof value === 'boolean'
-          ? value
-          : this.defaultValue;
+    parseValue(value) {
+      return value || value === 0 || typeof value === "boolean"
+        ? value
+        : this.defaultValue;
     },
     base64ToBlob(data, mime) {
       let base64 = window.btoa(window.unescape(encodeURIComponent(data)));
@@ -352,7 +355,7 @@ export default {
         u8arr[n] = bstr.charCodeAt(n);
       }
       return new Blob([u8arr], { type: mime });
-    }
-  } // end methods
+    },
+  }, // end methods
 };
 </script>
