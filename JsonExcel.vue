@@ -204,7 +204,6 @@ export default {
     jsonToCSV(data) {
       let _self = this;
       var csvData = [];
-      var self = this;
 
       //Header
       const header = this.header || this.$attrs.title;

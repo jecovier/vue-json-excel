@@ -1,6 +1,6 @@
 {
   "name": "vue-json-excel",
-  "version": "0.2.98",
+  "version": "0.2.99",
   "description": "Download your JSON as an excel or CSV file directly from the browser",
   "main": "dist/vue-json-excel.umd.js",
   "module": "dist/vue-json-excel.esm.js",
