@@ -1,9 +1,11 @@
 {
   "name": "vue-json-excel",
-  "version": "0.2.91",
-  "description": "Download your JSON data as an excel file directly from the browser",
-  "main": "JsonExcel.vue",
+  "version": "0.2.98",
+  "description": "Download your JSON as an excel or CSV file directly from the browser",
+  "main": "dist/vue-json-excel.umd.js",
+  "module": "dist/vue-json-excel.esm.js",
   "scripts": {
+    "build:dist": "rollup -c ./rollup.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,6 +17,8 @@
     "vuejs",
     "vue2",
     "Excel",
+    "xls",
+    "csv",
     "json",
     "export",
     "json excel",
@@ -29,5 +33,12 @@
   "homepage": "https://github.com/jecovier/vue-json-excel#readme",
   "dependencies": {
     "downloadjs": "^1.4.7"
+  },
+  "devDependencies": {
+    "rollup": "^1.7.4",
+    "rollup-plugin-commonjs": "^9.2.2",
+    "rollup-plugin-node-resolve": "^4.0.1",
+    "rollup-plugin-vue": "^4.7.2",
+    "vue-template-compiler": "^2.6.10"
   }
 }
