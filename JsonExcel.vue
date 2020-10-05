@@ -78,6 +78,11 @@ export default {
     escapeCsv: {
       type: Boolean,
       default: true
+    },
+    // long number stringify
+    stringifyLongNum:{
+      type:Boolean,
+      default:false
     }
   },
   computed: {
@@ -171,7 +176,7 @@ export default {
       data.map(function(item, index) {
         xlsData += "<tr>";
         for (let key in item) {
-          xlsData += "<td>" + _self.valueReformattedForMultilines(item[key]) + "</td>";
+          xlsData += "<td>" + _self.preprocessLongNum(_self.valueReformattedForMultilines(item[key])) + "</td>";
         }
         xlsData += "</tr>";
       });
@@ -197,6 +202,7 @@ export default {
     jsonToCSV(data) {
       let _self = this;
       var csvData = [];
+      var self = this;
       //Header
       if (this.title != null) {
         csvData.push(this.parseExtraData(this.title, "${data}\r\n"));
@@ -211,7 +217,7 @@ export default {
       //Data
       data.map(function(item) {
         for (let key in item) {
-          let escapedCSV = item[key];
+          let escapedCSV = item[key] + '';
           if (_self.escapeCsv) {
             escapedCSV = '=\"' + escapedCSV + '\"'; // cast Numbers to string
             if (escapedCSV.match(/[,"\n]/)) {
@@ -270,7 +276,8 @@ export default {
       let parseData = "";
       if (Array.isArray(extraData)) {
         for (var i = 0; i < extraData.length; i++) {
-          parseData += format.replace("${data}", extraData[i]);
+          if(extraData[i])
+            parseData += format.replace("${data}", extraData[i]);
         }
       } else {
         parseData += format.replace("${data}", extraData);
@@ -303,7 +310,19 @@ export default {
       if (typeof(value)=="string") return(value.replace(/\n/ig,"<br/>"));
       else return(value);
     },
-
+    preprocessLongNum(value) {
+      if(this.stringifyLongNum){
+         if(String(value).startsWith('0x')){
+            return value
+         }
+         if (!isNaN(value) && value != "") {
+           if(value>99999999999||value<0.0000000000001){
+              return '=\"' + value + '\"';
+           }
+         }
+       }
+       return value
+    },
     getValueFromNestedItem(item, indexes){
       let nestedItem = item;
       for (let index of indexes) {
