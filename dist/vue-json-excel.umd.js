@@ -210,7 +210,11 @@
 	    // Title(s) for the data, could be a string or an array of strings (multiple titles)
 	    header: {
 	      default: null,
-	    },
+		},
+		// Title(s) for single column data, must be an array (ex: ['titleCol0',,TitleCol2])
+		perColumnsHeaders:  {
+			default: null,
+		  },
 	    // Footer(s) for the data, could be a string or an array of strings (multiple footers)
 	    footer: {
 	      default: null,
@@ -325,7 +329,17 @@
 	          header,
 	          '<tr><th colspan="' + colspan + '">${data}</th></tr>'
 	        );
-	      }
+		  }
+		  
+		  // perColumnsHeaders
+		  const perColumnsHeaders = this.perColumnsHeaders;
+		  if(Array.isArray(perColumnsHeaders)) {
+			  xlsData += "<tr>";
+			  for (let pchKey in perColumnsHeaders) {
+				  xlsData += "<th>" + perColumnsHeaders[pchKey] + "</th>";
+			  }
+			  xlsData += "</tr>";
+		  }
 
 	      //Fields
 	      xlsData += "<tr>";
@@ -378,7 +392,18 @@
 	      const header = this.header || this.$attrs.title;
 	      if (header) {
 	        csvData.push(this.parseExtraData(header, "${data}\r\n"));
-	      }
+		  }
+		  
+		  // perColumnsHeaders
+		  const perColumnsHeaders = this.perColumnsHeaders;
+		  if(Array.isArray(perColumnsHeaders)) {
+			  for (let pchKey in perColumnsHeaders) {
+				  csvData.push(perColumnsHeaders[pchKey]);
+				  csvData.push(",");
+			  }
+			  csvData.pop();
+			  csvData.push("\r\n");
+		  }
 
 	      //Fields
 	      for (let key in data[0]) {
