@@ -103,6 +103,7 @@ export default {
       if (typeof this.fetch === "function" || !data) data = await this.fetch();
 
       if (!data || !data.length) {
+        if (typeof this.beforeFinish === "function") await this.beforeFinish();
         return;
       }
 
