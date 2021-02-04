@@ -284,7 +284,7 @@ when using callback functions in the fields description, you have three option t
 - **field: 'define.nested.object'** you can retrieve a nested object too.
 
 ```js
-    json_fields: {s
+    json_fields: {
         'Complete name': 'name',
         'City': 'city',
         'Telephone': 'phone.mobile',
