@@ -214,6 +214,10 @@ var script = {
       type: String,
       default: "data.xls",
     },
+    buttonText: {
+      type: String,
+      default: "Download data.xls",
+    },
     fetch: {
       type: Function,
     },
@@ -617,7 +621,7 @@ var __vue_render__ = function() {
   return _c(
     "div",
     { attrs: { id: _vm.idName }, on: { click: _vm.generate } },
-    [_vm._t("default", [_vm._v(" Download " + _vm._s(_vm.name) + " ")])],
+    [_vm._t("default", [_vm._v(" " + _vm._s(_vm.buttonText) + " ")])],
     2
   )
 };

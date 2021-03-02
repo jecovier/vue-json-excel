@@ -1,6 +1,6 @@
 <template>
   <div :id="idName" @click="generate">
-    <slot> Download {{ name }} </slot>
+    <slot> {{ buttonText }} </slot>
   </div>
 </template>
 
@@ -50,6 +50,10 @@ export default {
     name: {
       type: String,
       default: "data.xls",
+    },
+    buttonText: {
+      type: String,
+      default: "Download data.xls",
     },
     fetch: {
       type: Function,
