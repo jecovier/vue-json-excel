@@ -9,6 +9,11 @@ import download from "downloadjs";
 
 export default {
   props: {
+    // If true, don't download but emit a Blob
+    emitBlob: {
+      type: Boolean,
+      default: false,
+    },
     // mime type [xls, csv]
     type: {
       type: String,
@@ -133,7 +138,8 @@ export default {
     export: async function (data, filename, mime) {
       let blob = this.base64ToBlob(data, mime);
       if (typeof this.beforeFinish === "function") await this.beforeFinish();
-      download(blob, filename, mime);
+      if (this.emitBlob) this.$emit("blob", blob);
+      else download(blob, filename, mime);
     },
     /*
 		jsonToXLS

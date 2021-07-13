@@ -174,6 +174,11 @@ var download = createCommonjsModule(function (module, exports) {
 
 var script = {
   props: {
+    // If true, don't download but emit a Blob
+    emitBlob: {
+      type: Boolean,
+      default: false,
+    },
     // mime type [xls, csv]
     type: {
       type: String,
@@ -298,7 +303,8 @@ var script = {
     export: async function (data, filename, mime) {
       let blob = this.base64ToBlob(data, mime);
       if (typeof this.beforeFinish === "function") await this.beforeFinish();
-      download(blob, filename, mime);
+      if (this.emitBlob) this.$emit("blob", blob);
+      else download(blob, filename, mime);
     },
     /*
 		jsonToXLS
@@ -619,7 +625,11 @@ var __vue_render__ = function() {
   return _c(
     "div",
     { attrs: { id: _vm.idName }, on: { click: _vm.generate } },
-    [_vm._t("default", [_vm._v(" Download " + _vm._s(_vm.name) + " ")])],
+    [
+      _vm._t("default", function() {
+        return [_vm._v(" Download " + _vm._s(_vm.name) + " ")]
+      })
+    ],
     2
   )
 };
