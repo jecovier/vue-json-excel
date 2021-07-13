@@ -20,8 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2a56c0b4-4e1f-4701-ab90-f20c3a941764" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/JsonExcel.vue" beforeDir="false" afterPath="$PROJECT_DIR$/JsonExcel.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,7 +56,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1626175362623</updated>
-      <workItem from="1626175364392" duration="283000" />
+      <workItem from="1626175364392" duration="331000" />
     </task>
     <servers />
   </component>
