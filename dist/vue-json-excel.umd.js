@@ -275,7 +275,7 @@
 	        return;
 	      }
 
-	      let json = this.getProcessedJson(data, this.downloadFields);
+	      let json = await this.getProcessedJson(data, this.downloadFields);
 	      if (this.type === "html") {
 	        // this is mainly for testing
 	        return this.export(
@@ -416,18 +416,21 @@
 			---------------
 			Get only the data to export, if no fields are set return all the data
 			*/
-	    getProcessedJson(data, header) {
+	    async getProcessedJson(data, header) {
 	      let keys = this.getKeys(data, header);
 	      let newData = [];
 	      let _self = this;
-	      data.map(function (item, index) {
+	      await data.reduce(async function (prev, current) {
+	        await prev;
 	        let newItem = {};
 	        for (let label in keys) {
 	          let property = keys[label];
-	          newItem[label] = _self.getValue(property, item);
+	          newItem[label] = await _self.getValue(property, current);
 	        }
 	        newData.push(newItem);
-	      });
+
+	        return true;
+	      }, []);
 
 	      return newData;
 	    },
@@ -460,7 +463,7 @@
 	      return parseData;
 	    },
 
-	    getValue(key, item) {
+	    async getValue(key, item) {
 	      const field = typeof key !== "object" ? key : key.field;
 	      let indexes = typeof field !== "string" ? [] : field.split(".");
 	      let value = this.defaultValue;
@@ -471,7 +474,7 @@
 	      else value = this.parseValue(item[field]);
 
 	      if (key.hasOwnProperty("callback"))
-	        value = this.getValueFromCallback(value, key.callback);
+	        value = await this.getValueFromCallback(value, key.callback);
 
 	      return value;
 	    },
@@ -504,9 +507,9 @@
 	      return this.parseValue(nestedItem);
 	    },
 
-	    getValueFromCallback(item, callback) {
+	    async getValueFromCallback(item, callback) {
 	      if (typeof callback !== "function") return this.defaultValue;
-	      const value = callback(item);
+	      const value = await callback(item);
 	      return this.parseValue(value);
 	    },
 	    parseValue(value) {
@@ -623,7 +626,11 @@
 	  return _c(
 	    "div",
 	    { attrs: { id: _vm.idName }, on: { click: _vm.generate } },
-	    [_vm._t("default", [_vm._v(" Download " + _vm._s(_vm.name) + " ")])],
+	    [
+	      _vm._t("default", function() {
+	        return [_vm._v(" Download " + _vm._s(_vm.name) + " ")]
+	      })
+	    ],
 	    2
 	  )
 	};
